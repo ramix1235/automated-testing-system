@@ -1,0 +1,209 @@
+.d-f {
+  display: flex;
+}
+.d-b {
+  display: block;
+}
+.d-n {
+  display: none;
+}
+.d-ib {
+  display: inline-block;
+}
+.fw-n {
+  flex-wrap: nowrap;
+}
+.fw-w {
+  flex-wrap: wrap;
+}
+.ai-fs {
+  align-items: flex-start;
+}
+.ai-c {
+  align-items: center;
+}
+.ai-fe {
+  align-items: flex-end;
+}
+.ai-st {
+  align-items: stretch;
+}
+.as-fs {
+  align-self: flex-start;
+}
+.as-c {
+  align-self: center;
+}
+.as-fe {
+  align-self: flex-end;
+}
+.jc-c {
+  justify-content: center;
+}
+.jc-sb {
+  justify-content: space-between;
+}
+.jc-sa {
+  justify-content: space-around;
+}
+.jc-fe {
+  justify-content: flex-end;
+}
+.f-d-column {
+  flex-direction: column;
+}
+.f-d-row {
+  flex-direction: row;
+}
+.pull-right {
+  float: right;
+}
+.pull-left {
+  float: left;
+}
+.pos-r {
+  position: relative;
+}
+.pos-a {
+  position: absolute !important;
+}
+.pos-s {
+  position: static;
+}
+.o-h {
+  overflow: hidden;
+}
+.o-a {
+  overflow: auto;
+}
+.clearfix {
+  &::after {
+    display: block;
+    content: "";
+    clear: both;
+  }
+}
+.text-center {
+  text-align: center;
+}
+.text-left {
+  text-align: left;
+}
+.text-right {
+  text-align: right;
+}
+.v-a-t {
+  vertical-align: top;
+}
+.v-a-m {
+  vertical-align: middle;
+}
+.v-a-b {
+  vertical-align: bottom;
+}
+.fixed {
+  position: fixed;
+}
+.uppercase {
+  text-transform: uppercase;
+}
+.capitalize {
+  text-transform: capitalize;
+}
+.abs-center,
+.abs-centerd {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@for $i from -500 through 500 {
+  .m-#{$i} {
+    margin: $i + 0px;
+  }
+
+  .m-b-#{$i} {
+    margin-bottom: $i + 0px;
+  }
+
+  .m-t-#{$i} {
+    margin-top: $i + 0px;
+  }
+
+  .m-l-#{$i} {
+    margin-left: $i + 0px;
+  }
+
+  .m-r-#{$i} {
+    margin-right: $i + 0px;
+  }
+
+  .m-v-#{$i} {
+    margin-top: $i + 0px;
+    margin-bottom: $i + 0px;
+  }
+
+  .m-h-#{$i} {
+    margin-left: $i + 0px;
+    margin-right: $i + 0px;
+  }
+}
+
+/* PADDINGS */
+
+@for $i from 0 through 500 {
+  .p-#{$i} {
+    padding: $i + 0px;
+  }
+
+  .p-b-#{$i} {
+    padding-bottom: $i + 0px;
+  }
+
+  .p-t-#{$i} {
+    padding-top: $i + 0px;
+  }
+
+  .p-l-#{$i} {
+    padding-left: $i + 0px;
+  }
+
+  .p-r-#{$i} {
+    padding-right: $i + 0px;
+  }
+
+  .p-v-#{$i} {
+    padding-top: $i + 0px;
+    padding-bottom: $i + 0px;
+  }
+
+  .p-h-#{$i} {
+    padding-left: $i + 0px;
+    padding-right: $i + 0px;
+  }
+}
+
+/* Flex */
+
+@for $i from 1 through 10 {
+  .flx-#{$i} {
+    flex: $i;
+  }
+}
+
+/* WIDTH */
+
+@for $i from 1 through 100 {
+  .w-#{$i} {
+    width: $i + 0%;
+  }
+}
+
+/* FONT */
+
+@for $i from 0 through 500 {
+  .f-s-#{$i} {
+    font-size: $i + 0px;
+  }
+}
