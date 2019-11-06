@@ -19,7 +19,7 @@ module.exports = override(
     modifyVars: {
       '@primary-color': '#1DA57A',
       '@text-color': '#828282',
-      '@icon-color': '#828282',
+      '@icon-color': '#282c34',
       '@body-background': '#282c34',
       '@font-family': "-apple-system, BlinkMacSystemFont, 'Century Gothic', 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'"
     },

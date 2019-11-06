@@ -17,26 +17,30 @@ import ERRORS from '../constants/errors'
 const { Item } = Form;
 
 class LoginForm extends PureComponent {
-    componentDidMount() {
-        this.props.dispatch(userActions.login('test', '12345678'));
+    state = {
+        isLoading: false
     }
 
     handleSubmit = e => {
-        const { form } = this.props;
+        const { form, dispatch } = this.props;
 
         e.preventDefault();
 
         form.validateFields((err, values) => {
             if (!err) {
                 console.log('Received values of form: ', values);
+
+                this.setState({ isLoading: true }, () => {
+                    dispatch(userActions.login(values.email, values.password))
+                        .finally(() => this.setState({ isLoading: false }))
+                });
             }
         });
     };
 
     render() {
-        const { form: { getFieldDecorator }, user } = this.props;
-
-        console.log(user);
+        const { form: { getFieldDecorator } } = this.props;
+        const { isLoading } = this.state;
 
         return (
             <Form onSubmit={this.handleSubmit}>
@@ -73,7 +77,12 @@ class LoginForm extends PureComponent {
                         <Link className="m-l-20" to="/forgot">Forgot password</Link>
                     </div>
                     <div className="d-f f-d-column ai-c m-t-50">
-                        <Button type="primary" htmlType="submit">Log in</Button>
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                            loading={isLoading}
+                        >Log in
+                        </Button>
                         <span className="m-t-10">or</span>
                         <Link to="/register">Register</Link>
                     </div>

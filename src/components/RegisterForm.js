@@ -1,5 +1,8 @@
 import React, { PureComponent } from 'react';
 import { Link } from "react-router-dom";
+import { connect } from 'react-redux';
+
+import * as userActions from '../store/actions/user';
 
 import {
     Form,
@@ -13,20 +16,30 @@ import ERRORS from '../constants/errors'
 const { Item } = Form;
 
 class RegisterForm extends PureComponent {
+    state = {
+        isLoading: false
+    }
+
     handleSubmit = e => {
-        const { form } = this.props;
+        const { form, dispatch } = this.props;
 
         e.preventDefault();
 
         form.validateFields((err, values) => {
             if (!err) {
                 console.log('Received values of form: ', values);
+
+                this.setState({ isLoading: true }, () => {
+                    dispatch(userActions.login(values.email, values.password))
+                        .finally(() => this.setState({ isLoading: false }))
+                });
             }
         });
     };
 
     render() {
         const { form: { getFieldDecorator } } = this.props;
+        const { isLoading } = this.state;
 
         return (
             <Form onSubmit={this.handleSubmit}>
@@ -54,7 +67,13 @@ class RegisterForm extends PureComponent {
                 </Item>
                 <Item>
                     <div className="d-f f-d-column ai-c">
-                        <Button type="primary" htmlType="submit">Register</Button>
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                            loading={isLoading}
+                        >
+                            Register
+                            </Button>
                         <Link className="as-fs m-t-10" to="/login">
                             <span className="m-r-5 f-s-20">&lsaquo;</span>
                             <span>Back</span>
@@ -66,4 +85,6 @@ class RegisterForm extends PureComponent {
     }
 }
 
-export default Form.create({ name: 'registerForm' })(RegisterForm);
+export default connect(state => ({
+    user: state.user
+}), null)(Form.create({ name: 'registerForm' })(RegisterForm));

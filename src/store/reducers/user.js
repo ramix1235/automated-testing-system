@@ -11,6 +11,8 @@ export default function (state = initialState, action) {
         case actions.LOGIN_USER:
         case actions.REGISTER_USER:
         case actions.GET_USER: {
+            localStorage.setItem('token', user.token);
+
             return { ...state, user };
         }
 
