@@ -1,5 +1,8 @@
 import React, { PureComponent } from 'react';
 import { Link } from "react-router-dom";
+import { connect } from 'react-redux';
+
+import * as userActions from '../store/actions/user';
 
 import {
     Form,
@@ -14,6 +17,10 @@ import ERRORS from '../constants/errors'
 const { Item } = Form;
 
 class LoginForm extends PureComponent {
+    componentDidMount() {
+        this.props.dispatch(userActions.login('test', '12345678'));
+    }
+
     handleSubmit = e => {
         const { form } = this.props;
 
@@ -27,7 +34,9 @@ class LoginForm extends PureComponent {
     };
 
     render() {
-        const { form: { getFieldDecorator } } = this.props;
+        const { form: { getFieldDecorator }, user } = this.props;
+
+        console.log(user);
 
         return (
             <Form onSubmit={this.handleSubmit}>
@@ -74,4 +83,6 @@ class LoginForm extends PureComponent {
     }
 }
 
-export default Form.create({ name: 'loginForm' })(LoginForm);
+export default connect(state => ({
+    user: state.user
+}), null)(Form.create({ name: 'loginForm' })(LoginForm));
