@@ -20,6 +20,8 @@ module.exports = override(
       '@font-family': "-apple-system, BlinkMacSystemFont, 'Century Gothic', 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'",
       '@primary-color': '#1DA57A',
       '@text-color': '#828282',
+      '@heading-color': '#1DA57A',
+      '@border-color-split': '#828282',
       '@icon-color': '#282c34',
       '@body-background': '#282c34',
       '@component-background': '#202228',
@@ -27,6 +29,12 @@ module.exports = override(
       '@item-active-bg': '#16171b',
       '@menu-item-color': '#828282',
       '@menu-highlight-color': '#1DA57A',
+
+      // '@modal-body-padding': '24px',
+      // '@modal-header-bg': '@component-background',
+      // '@modal-heading-color': '@heading-color',
+      // '@modal-footer-bg': 'transparent',
+      // '@modal-footer-border-color-split': '@border-color-split',
 
       '@card-head-color': '#1DA57A',
       '@card-actions-background': '#16171b',

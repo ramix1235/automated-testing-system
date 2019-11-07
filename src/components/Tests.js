@@ -9,6 +9,7 @@ import {
     Card as CardItem
 } from 'antd';
 import Card from '../components/Card'
+import TestPopup from './TestPopup';
 
 const cards = [
     {
@@ -124,15 +125,17 @@ class Tests extends PureComponent {
                     if (!index) {
                         return (
                             <List.Item>
-                                <CardItem
-                                    hoverable
-                                    bordered
-                                >
-                                    <div className="action-description">
-                                        <div><Icon className="f-s-50" type="plus" /></div>
-                                        <div className="f-s-16">New test</div>
-                                    </div>
-                                </CardItem>
+                                <TestPopup>
+                                    <CardItem
+                                        hoverable
+                                        bordered
+                                    >
+                                        <div className="action-description">
+                                            <div><Icon className="f-s-50" type="plus" /></div>
+                                            <div className="f-s-16">New test</div>
+                                        </div>
+                                    </CardItem>
+                                </TestPopup>
                             </List.Item>
                         );
                     }

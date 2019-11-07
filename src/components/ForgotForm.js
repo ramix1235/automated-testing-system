@@ -42,7 +42,7 @@ class ForgotForm extends PureComponent {
         const { isLoading } = this.state;
 
         return (
-            <Form onSubmit={this.handleSubmit}>
+            <Form onSubmit={this.handleSubmit} className="auth">
                 <Item>
                     {getFieldDecorator('email', {
                         rules: [{ required: true, message: ERRORS.required.email }],
