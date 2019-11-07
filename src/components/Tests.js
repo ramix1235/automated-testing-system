@@ -4,12 +4,18 @@ import { connect } from 'react-redux';
 import * as userActions from '../store/actions/user';
 
 import {
-    Menu,
-    List
+    List,
+    Icon,
+    Card as CardItem
 } from 'antd';
 import Card from '../components/Card'
 
 const cards = [
+    {
+        id: '0',
+        title: 'Add new test',
+        description: ''
+    },
     {
         id: '1',
         title: 't vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti',
@@ -114,17 +120,36 @@ class Tests extends PureComponent {
                 }}
                 loading={isLoading}
                 dataSource={cards}
-                renderItem={item => (
-                    <List.Item>
-                        <Card
-                            item={item}
-                            loading={cardLoadingIds.includes(item.id)}
-                            onAction={this.handleTestAction}
-                            onEdit={this.handleTestEdit}
-                            onDelete={this.handleTestDelete}
-                        />
-                    </List.Item>
-                )}
+                renderItem={(item, index) => {
+                    if (!index) {
+                        return (
+                            <List.Item>
+                                <CardItem
+                                    hoverable
+                                    bordered
+                                >
+                                    <div className="action-description">
+                                        <div><Icon className="f-s-50" type="plus" /></div>
+                                        <div className="f-s-16">New test</div>
+                                    </div>
+                                </CardItem>
+                            </List.Item>
+                        );
+                    }
+
+                    return (
+                        <List.Item>
+                            <Card
+                                actionCard={index === 0}
+                                item={item}
+                                loading={cardLoadingIds.includes(item.id)}
+                                onAction={this.handleTestAction}
+                                onEdit={this.handleTestEdit}
+                                onDelete={this.handleTestDelete}
+                            />
+                        </List.Item>
+                    )
+                }}
             />
         );
     }

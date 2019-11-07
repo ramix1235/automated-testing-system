@@ -10,7 +10,34 @@
   }
 }
 
+.ant-empty-description {
+  color: $gray;
+}
+
 .ant-card {
+  .action-description {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 155px;
+    color: $gray;
+
+    &:hover {
+      .anticon {
+        color: $darkgreen;
+      }
+    }
+  }
+
+  &.ant-card-bordered {
+    border: 1px solid $gray;
+
+    &:hover {
+      border: 1px solid $darkgreen;
+    }
+  }
+
   .ant-card-meta {
     min-height: 118px;
 
@@ -34,17 +61,17 @@
       > span {
         > .anticon {
           color: $gray;
-        }
 
-        > .anticon:hover {
-          color: $darkgreen;
-
-          &.warning {
-            color: $darkyellow;
-          }
-
-          &.dangerous {
-            color: $darkred;
+          &:hover {
+            color: $darkgreen;
+  
+            &.warning {
+              color: $darkyellow;
+            }
+  
+            &.dangerous {
+              color: $darkred;
+            }
           }
         }
       }
