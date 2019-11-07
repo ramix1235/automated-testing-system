@@ -15,7 +15,7 @@ export default props => {
     }
 
     return (
-        <div className="d-f f-d-column jc-c ai-c m-t-70">
+        <div className="d-f f-d-column jc-c ai-c m-t-150">
             {form}
         </div>
     );

@@ -1,3 +1,6 @@
+#root {
+  height: 100%;
+}
 
 .header {
   background-color: $darkgray;
@@ -6,6 +9,10 @@
     height: 7vmin;
   }
 }
+
+// .main-menu {
+//   width: 15vmax;
+// }
 
 .ant-form {
   width: 30vmin;
@@ -17,4 +24,8 @@
   .ant-form-explain {
     font-size: 13px;
   }
+}
+
+.ant-menu-vertical {
+  border-right: none;
 }

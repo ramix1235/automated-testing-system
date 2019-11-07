@@ -38,14 +38,17 @@ class Header extends PureComponent {
             <div className="header d-f jc-sb ai-c w-100">
                 <img src={logo} className="logo m-v-10 m-h-15" alt="logo" />
                 {user && (
-                    <Button
-                        className="m-v-10 m-h-15"
-                        type="ghost"
-                        loading={isLoading}
-                        onClick={this.handleLogOut}
-                    >
-                        Log out
-                    </Button>
+                    <div className="d-f jc-c ai-c">
+                        <div>{user.email}</div>
+                        <Button
+                            className="m-v-10 m-h-15"
+                            type="ghost"
+                            loading={isLoading}
+                            onClick={this.handleLogOut}
+                        >
+                            Log out
+                        </Button>
+                    </div>
                 )}
             </div>
         );

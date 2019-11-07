@@ -4,12 +4,25 @@ import { connect } from 'react-redux';
 import * as userActions from '../store/actions/user';
 
 import {
-    Button
+    Menu,
 } from 'antd';
+
+const MENU = [
+    {
+        id: '1',
+        name: 'Tests'
+    },
+    {
+        id: '2',
+        name: 'Management'
+    }
+]
+const defaultSelectedMenu = '1';
 
 class Main extends PureComponent {
     state = {
-        isLoading: false
+        isLoading: false,
+        selectedMenu: defaultSelectedMenu
     }
 
     componentDidMount() {
@@ -25,14 +38,39 @@ class Main extends PureComponent {
         }
     }
 
+    handleMenuClick = e => {
+        console.log('click ', e);
+
+        this.setState({ selectedMenu: e.key });
+    }
+
+    renderMenu() {
+        const { selectedMenu } = this.state;
+
+        return (
+            <Menu
+                className="main-menu"
+                defaultSelectedKeys={[defaultSelectedMenu]}
+                selectedKeys={[selectedMenu]}
+                onClick={this.handleMenuClick}
+            >
+                {MENU.map(item => <Menu.Item key={item.id}>{item.name}</Menu.Item>)}
+            </Menu>
+        );
+    }
+
     render() {
         const { user } = this.props;
         const { isLoading } = this.state;
 
         return (
-            <div>
-                {isLoading}
-                {user && user.email}
+            <div className="d-f w-100 m-t-15">
+                <div className="flx-1 m-10">
+                    {this.renderMenu()}
+                </div>
+                <div className="flx-6 m-10">
+                    Hello!
+                </div>
             </div>
         );
     }

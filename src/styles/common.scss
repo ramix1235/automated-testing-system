@@ -200,6 +200,14 @@
   }
 }
 
+/* HEIGHT */
+
+@for $i from 1 through 100 {
+  .h-#{$i} {
+    height: $i + 0%;
+  }
+}
+
 /* FONT */
 
 @for $i from 0 through 500 {
