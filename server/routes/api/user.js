@@ -9,7 +9,7 @@ const User = mongoose.model('User');
 router.post('/register', auth.optional, (req, res, next) => {
   const { body: { user } } = req;
 
-  if(!user.email) {
+  if (!user.email) {
     return res.status(422).json({
       errors: {
         email: 'is required',
@@ -17,7 +17,7 @@ router.post('/register', auth.optional, (req, res, next) => {
     });
   }
 
-  if(!user.password) {
+  if (!user.password) {
     return res.status(422).json({
       errors: {
         password: 'is required',
@@ -37,7 +37,7 @@ router.post('/register', auth.optional, (req, res, next) => {
 router.post('/login', auth.optional, (req, res, next) => {
   const { body: { user } } = req;
 
-  if(!user.email) {
+  if (!user.email) {
     return res.status(422).json({
       errors: {
         email: 'is required',
@@ -45,7 +45,7 @@ router.post('/login', auth.optional, (req, res, next) => {
     });
   }
 
-  if(!user.password) {
+  if (!user.password) {
     return res.status(422).json({
       errors: {
         password: 'is required',
@@ -54,11 +54,11 @@ router.post('/login', auth.optional, (req, res, next) => {
   }
 
   return passport.authenticate('local', { session: false }, (err, passportUser, info) => {
-    if(err) {
+    if (err) {
       return next(err);
     }
 
-    if(passportUser) {
+    if (passportUser) {
       const user = passportUser;
       user.token = passportUser.generateJWT();
 
@@ -75,11 +75,35 @@ router.get('/current', auth.required, (req, res, next) => {
 
   return User.findById(id)
     .then((user) => {
-      if(!user) {
+      if (!user) {
         return res.sendStatus(400);
       }
 
       return res.json({ user: user.toAuthJSON() });
+    });
+});
+
+//POST current route (required, only authenticated users have access)
+router.post('/logout', auth.required, (req, res, next) => {
+  const { body: { id } } = req;
+
+  if (!id) {
+    return res.status(422).json({
+      errors: {
+        id: 'is required',
+      },
+    });
+  }
+
+  return User.findById(id)
+    .then((user) => {
+      if (!user) {
+        return res.sendStatus(400);
+      }
+
+      return res.json({
+        status: 'success'
+      });
     });
 });
 

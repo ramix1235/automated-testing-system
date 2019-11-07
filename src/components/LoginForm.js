@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Link } from "react-router-dom";
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 
 import * as userActions from '../store/actions/user';
 
@@ -8,7 +9,7 @@ import {
     Form,
     Input,
     Icon,
-    Checkbox,
+    // Checkbox,
     Button
 } from 'antd';
 
@@ -31,8 +32,22 @@ class LoginForm extends PureComponent {
                 console.log('Received values of form: ', values);
 
                 this.setState({ isLoading: true }, () => {
-                    dispatch(userActions.login(values.email, values.password))
-                        .finally(() => this.setState({ isLoading: false }))
+                    const user = {
+                        email: values.email,
+                        password: values.password
+                    };
+
+                    dispatch(userActions.login(user))
+                        .then(() => {
+                            const { history } = this.props;
+                            const location = {
+                                pathname: '/',
+                                state: { fromLogin: true }
+                            };
+
+                            this.setState({ isLoading: false }, () => history.replace(location));
+                        })
+                        .catch(() => this.setState({ isLoading: false }))
                 });
             }
         });
@@ -67,7 +82,7 @@ class LoginForm extends PureComponent {
                     )}
                 </Item>
                 <Item>
-                    <div className="d-f jc-sb">
+                    {/* <div className="d-f jc-sb m-b-50">
                         {getFieldDecorator('remember', {
                             valuePropName: 'checked',
                             initialValue: false,
@@ -75,13 +90,14 @@ class LoginForm extends PureComponent {
                             <Checkbox className="m-r-20">Remember me</Checkbox>
                         )}
                         <Link className="m-l-20" to="/forgot">Forgot password</Link>
-                    </div>
-                    <div className="d-f f-d-column ai-c m-t-50">
+                    </div> */}
+                    <div className="d-f f-d-column ai-c">
                         <Button
                             type="primary"
                             htmlType="submit"
                             loading={isLoading}
-                        >Log in
+                        >
+                            Log in
                         </Button>
                         <span className="m-t-10">or</span>
                         <Link to="/register">Register</Link>
@@ -93,5 +109,5 @@ class LoginForm extends PureComponent {
 }
 
 export default connect(state => ({
-    user: state.user
-}), null)(Form.create({ name: 'loginForm' })(LoginForm));
+    user: state.user.info
+}))(Form.create({ name: 'loginForm' })(withRouter(LoginForm)));

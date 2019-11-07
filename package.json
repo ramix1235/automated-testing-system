@@ -1,7 +1,6 @@
 {
   "name": "automated-testing-system",
   "version": "0.1.0",
-  "private": true,
   "devDependencies": {
     "react-scripts": "3.2.0"
   },

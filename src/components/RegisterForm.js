@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Link } from "react-router-dom";
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 
 import * as userActions from '../store/actions/user';
 
@@ -30,8 +31,22 @@ class RegisterForm extends PureComponent {
                 console.log('Received values of form: ', values);
 
                 this.setState({ isLoading: true }, () => {
-                    dispatch(userActions.login(values.email, values.password))
-                        .finally(() => this.setState({ isLoading: false }))
+                    const user = {
+                        email: values.email,
+                        password: values.password
+                    };
+
+                    dispatch(userActions.register(user))
+                        .then(() => {
+                            const { history } = this.props;
+                            const location = {
+                                pathname: '/',
+                                state: { fromRegister: true }
+                            };
+
+                            this.setState({ isLoading: false }, () => history.replace(location));
+                        })
+                        .catch(() => this.setState({ isLoading: false }))
                 });
             }
         });
@@ -73,8 +88,8 @@ class RegisterForm extends PureComponent {
                             loading={isLoading}
                         >
                             Register
-                            </Button>
-                        <Link className="as-fs m-t-10" to="/login">
+                        </Button>
+                        <Link className="as-fs m-t-22" to="/login">
                             <span className="m-r-5 f-s-20">&lsaquo;</span>
                             <span>Back</span>
                         </Link>
@@ -86,5 +101,5 @@ class RegisterForm extends PureComponent {
 }
 
 export default connect(state => ({
-    user: state.user
-}), null)(Form.create({ name: 'registerForm' })(RegisterForm));
+    user: state.user.info
+}))(Form.create({ name: 'registerForm' })(withRouter(RegisterForm)));

@@ -1,9 +1,14 @@
-.logo {
-  height: 25vmin;
+
+.header {
+  background-color: $darkgray;
+
+  .logo {
+    height: 7vmin;
+  }
 }
 
 .ant-form {
-  min-width: 300px;
+  width: 30vmin;
 
   .ant-form-item-control {
     line-height: 1.5;
