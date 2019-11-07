@@ -5,7 +5,9 @@ import * as userActions from '../store/actions/user';
 
 import {
     Menu,
+    List
 } from 'antd';
+import Tests from '../components/Tests';
 
 const MENU = [
     {
@@ -26,16 +28,14 @@ class Main extends PureComponent {
     }
 
     componentDidMount() {
-        const { user, dispatch } = this.props;
+        const { dispatch } = this.props;
 
-        if (!user) {
-            this.setState({ isLoading: true }, () => {
-                const userId = localStorage.getItem('userId');
+        this.setState({ isLoading: true }, () => {
+            const userId = localStorage.getItem('userId');
 
-                dispatch(userActions.getUser(userId))
-                    .finally(() => this.setState({ isLoading: false }))
-            });
-        }
+            dispatch(userActions.getUser(userId))
+                .finally(() => this.setState({ isLoading: false }))
+        });
     }
 
     handleMenuClick = e => {
@@ -49,7 +49,6 @@ class Main extends PureComponent {
 
         return (
             <Menu
-                className="main-menu"
                 defaultSelectedKeys={[defaultSelectedMenu]}
                 selectedKeys={[selectedMenu]}
                 onClick={this.handleMenuClick}
@@ -59,17 +58,29 @@ class Main extends PureComponent {
         );
     }
 
+    renderContent() {
+        const { selectedMenu } = this.state;
+        let content = null;
+
+        switch (selectedMenu) {
+            case '1': content = <Tests />; break;
+            case '2': break;
+            default: break;
+        }
+
+        return content;
+    }
+
     render() {
-        const { user } = this.props;
-        const { isLoading } = this.state;
+        // const { user } = this.props;
 
         return (
             <div className="d-f w-100 m-t-15">
                 <div className="flx-1 m-10">
                     {this.renderMenu()}
                 </div>
-                <div className="flx-6 m-10">
-                    Hello!
+                <div className="flx-4 m-10 m-r-20">
+                    {this.renderContent()}
                 </div>
             </div>
         );

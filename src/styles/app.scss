@@ -10,9 +10,47 @@
   }
 }
 
-// .main-menu {
-//   width: 15vmax;
-// }
+.ant-card {
+  .ant-card-meta {
+    min-height: 118px;
+
+    .ant-card-meta-description {
+      color: $gray;
+    }
+
+    .ant-card-meta-title {
+      margin-bottom: 25px;
+    }
+  }
+
+  .ant-card-actions {
+    border-top: 1px solid $gray;
+
+    > li:not(:last-child) {
+      border-right: 1px solid $gray;
+    }
+
+    > li {
+      > span {
+        > .anticon {
+          color: $gray;
+        }
+
+        > .anticon:hover {
+          color: $darkgreen;
+
+          &.warning {
+            color: $darkyellow;
+          }
+
+          &.dangerous {
+            color: $darkred;
+          }
+        }
+      }
+    }
+  }
+}
 
 .ant-form {
   width: 30vmin;
