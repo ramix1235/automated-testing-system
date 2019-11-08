@@ -69,12 +69,12 @@ router.post('/login', auth.optional, (req, res, next) => {
   })(req, res, next);
 });
 
-//GET current route (required, only authenticated users have access)
-router.get('/current', auth.required, (req, res, next) => {
+//GET current user route (required, only authenticated users have access)
+router.get('/', auth.required, (req, res, next) => {
   const { payload: { id } } = req;
 
   return User.findById(id)
-    .then((user) => {
+    .then(user => {
       if (!user) {
         return res.sendStatus(400);
       }
@@ -83,7 +83,7 @@ router.get('/current', auth.required, (req, res, next) => {
     });
 });
 
-//POST current route (required, only authenticated users have access)
+//POST logout user route (required, only authenticated users have access)
 router.post('/logout', auth.required, (req, res, next) => {
   const { body: { id } } = req;
 
@@ -96,7 +96,7 @@ router.post('/logout', auth.required, (req, res, next) => {
   }
 
   return User.findById(id)
-    .then((user) => {
+    .then(user => {
       if (!user) {
         return res.sendStatus(400);
       }

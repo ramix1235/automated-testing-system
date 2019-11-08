@@ -1,4 +1,7 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
+
+import * as testActions from '../store/actions/test';
 
 import {
     Form,
@@ -29,7 +32,7 @@ class TestPopup extends PureComponent {
     };
 
     handleOk = () => {
-        const { form } = this.props;
+        const { form, user } = this.props;
         const { openedQuestions, closedQuestions } = this.state;
         const isNoQuestions = !openedQuestions.length && !closedQuestions.length
 
@@ -38,21 +41,39 @@ class TestPopup extends PureComponent {
         }
 
         form.validateFields((err, values) => {
+            const { dispatch } = this.props;
+
             if (err) return;
 
             console.log('Received values of form: ', values);
 
             this.setState({ confirmLoading: true }, () => {
-                setTimeout(() => {
-                    this.setState({
-                        // visible: false,
-                        confirmLoading: false,
-                        closedQuestions: [],
-                        openedQuestions: []
-                    });
+                const test = {
+                    author: user.id,
+                    title: values.title,
+                    description: values.description,
+                    closedQuestions: values.closedQuestions,
+                    openedQuestions: values.openedQuestions,
+                }
 
-                    form.resetFields();
-                }, 2000);
+                dispatch(testActions.create(test))
+                    .then(() => {
+                        this.setState({
+                            // visible: false,
+                            confirmLoading: false,
+                            closedQuestions: [],
+                            openedQuestions: []
+                        });
+
+                        form.resetFields();
+
+                        message.success('Test has been created successfully', 5);
+                    })
+                    .catch(() => {
+                        message.error('Something went wrong', 5);
+
+                        this.setState({ isLoading: false });
+                    })
             });
 
         });
@@ -148,7 +169,8 @@ class TestPopup extends PureComponent {
                     </Item>
                     <Item className="m-l-10 flx-1" required={false} label={index === 0 ? 'Correct answer' : ''}>
                         {getFieldDecorator(`closedQuestions[${closedQuestion.id}].answer`, {
-                            valuePropName: 'checked'
+                            valuePropName: 'checked',
+                            initialValue: false
                         })(
                             <Switch checkedChildren={<span className="f-s-14">Yes</span>} unCheckedChildren={<span className="f-s-14">No</span>} />
                         )}
@@ -284,4 +306,6 @@ class TestPopup extends PureComponent {
     }
 }
 
-export default (Form.create({ name: 'testForm' }))(TestPopup);
+export default connect(state => ({
+    user: state.user.info
+}))(Form.create({ name: 'testForm' })(TestPopup));

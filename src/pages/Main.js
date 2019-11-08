@@ -32,9 +32,7 @@ class Main extends PureComponent {
         const { dispatch } = this.props;
 
         this.setState({ isLoading: true }, () => {
-            const userId = localStorage.getItem('userId');
-
-            dispatch(userActions.getUser(userId))
+            dispatch(userActions.getUser())
                 .finally(() => this.setState({ isLoading: false }))
         });
     }

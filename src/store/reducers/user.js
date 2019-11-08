@@ -12,14 +12,12 @@ export default function (state = initialState, action) {
         case actions.REGISTER_USER:
         case actions.GET_USER: {
             localStorage.setItem('token', user.token);
-            localStorage.setItem('userId', user.id);
 
             return { ...state, info: user };
         }
 
         case actions.LOGOUT_USER: {
             localStorage.removeItem('token');
-            localStorage.removeItem('userId');
 
             return { ...state, info: undefined };
         }

@@ -14,15 +14,14 @@ class Header extends PureComponent {
     }
 
     handleLogOut = () => {
-        const { history, dispatch } = this.props;
-        const userId = localStorage.getItem('userId');
+        const { history, dispatch, user } = this.props;
         const location = {
             pathname: '/login',
             state: { fromLogOut: true }
         };
 
         this.setState({ isLoading: true }, () => {
-            dispatch(userActions.logout(userId))
+            dispatch(userActions.logout(user.id))
                 .then(() => {
                     this.setState({ isLoading: false }, () => history.replace(location));
                 })

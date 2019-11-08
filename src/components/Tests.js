@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 
-import * as userActions from '../store/actions/user';
+import * as testActions from '../store/actions/test';
 
 import {
     List,
@@ -11,58 +11,58 @@ import {
 import Card from '../components/Card'
 import TestPopup from './TestPopup';
 
-const cards = [
-    {
-        id: '0',
-        title: 'Add new test',
-        description: ''
-    },
-    {
-        id: '1',
-        title: 't vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti',
-        description: 't vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium'
-    },
-    {
-        id: '2',
-        title: 'New Test2',
-        description: 't vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium'
-    },
-    {
-        id: '3',
-        title: 'New Test3',
-        description: 'Description3'
-    },
-    {
-        id: '4',
-        title: 'New Test4',
-        description: 'Description4'
-    },
-    {
-        id: '5',
-        title: 'New Test5',
-        description: 'Description5'
-    },
-    {
-        id: '6',
-        title: 'New Test6',
-        description: 'Description6'
-    },
-    {
-        id: '7',
-        title: 'New Test7',
-        description: 'Description7'
-    },
-    {
-        id: '8',
-        title: 'New Test8',
-        description: 'Description8'
-    },
-    {
-        id: '9',
-        title: 'New Test9',
-        description: 'Description9'
-    },
-];
+// const cards = [
+//     {
+//         id: '0',
+//         title: 'Add new test',
+//         description: ''
+//     },
+//     {
+//         id: '1',
+//         title: 't vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti',
+//         description: 't vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium'
+//     },
+//     {
+//         id: '2',
+//         title: 'New Test2',
+//         description: 't vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium'
+//     },
+//     {
+//         id: '3',
+//         title: 'New Test3',
+//         description: 'Description3'
+//     },
+//     {
+//         id: '4',
+//         title: 'New Test4',
+//         description: 'Description4'
+//     },
+//     {
+//         id: '5',
+//         title: 'New Test5',
+//         description: 'Description5'
+//     },
+//     {
+//         id: '6',
+//         title: 'New Test6',
+//         description: 'Description6'
+//     },
+//     {
+//         id: '7',
+//         title: 'New Test7',
+//         description: 'Description7'
+//     },
+//     {
+//         id: '8',
+//         title: 'New Test8',
+//         description: 'Description8'
+//     },
+//     {
+//         id: '9',
+//         title: 'New Test9',
+//         description: 'Description9'
+//     },
+// ];
 
 class Tests extends PureComponent {
     state = {
@@ -73,10 +73,10 @@ class Tests extends PureComponent {
     componentDidMount() {
         const { dispatch } = this.props;
 
-        this.setState({ isLoading: true }, () => {
-            const userId = localStorage.getItem('userId');
+        dispatch(testActions.getTest('5dc57cf2d2f26e43b8744bd3'));
 
-            dispatch(userActions.getUser(userId))
+        this.setState({ isLoading: true }, () => {
+            dispatch(testActions.getAllTests())
                 .finally(() => this.setState({ isLoading: false }))
         });
     }
@@ -105,7 +105,7 @@ class Tests extends PureComponent {
     }
 
     render() {
-        // const { user } = this.props;
+        const { tests } = this.props;
         const { isLoading, cardLoadingIds } = this.state;
 
         return (
@@ -120,7 +120,7 @@ class Tests extends PureComponent {
                     xxl: 4
                 }}
                 loading={isLoading}
-                dataSource={cards}
+                dataSource={[{ title: 'New test' }, ...tests]}
                 renderItem={(item, index) => {
                     if (!index) {
                         return (
@@ -132,7 +132,7 @@ class Tests extends PureComponent {
                                     >
                                         <div className="action-description">
                                             <div><Icon className="f-s-50" type="plus" /></div>
-                                            <div className="f-s-16">New test</div>
+                                            <div className="f-s-16">{item.title}</div>
                                         </div>
                                     </CardItem>
                                 </TestPopup>
@@ -159,5 +159,5 @@ class Tests extends PureComponent {
 }
 
 export default connect(state => ({
-    user: state.user.info
+    tests: state.test.tests
 }))(Tests);
