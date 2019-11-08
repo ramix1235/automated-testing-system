@@ -25,14 +25,33 @@ class TestPopup extends PureComponent {
         openedQuestions: []
     };
 
+    componentDidUpdate(prevProps) {
+        if (
+            prevProps.selectedItem !== this.props.selectedItem
+            && this.props.selectedItem
+        ) {
+
+            this.setState({
+                closedQuestions: this.props.selectedItem.closedQuestions,
+                openedQuestions: this.props.selectedItem.openedQuestions
+            });
+        }
+    }
+
     showModal = () => {
         this.setState({
             visible: true,
         });
     };
 
+    getFieldIndex = (questions, questionId) => {
+        const { isEdit } = this.props;
+
+        return isEdit ? questions.findIndex(question => question.id === questionId) : questionId;
+    }
+
     handleOk = () => {
-        const { form, user } = this.props;
+        const { form, user, isEdit, dispatch, selectedItem } = this.props;
         const { openedQuestions, closedQuestions } = this.state;
         const isNoQuestions = !openedQuestions.length && !closedQuestions.length
 
@@ -41,8 +60,6 @@ class TestPopup extends PureComponent {
         }
 
         form.validateFields((err, values) => {
-            const { dispatch } = this.props;
-
             if (err) return;
 
             console.log('Received values of form: ', values);
@@ -56,16 +73,24 @@ class TestPopup extends PureComponent {
                     openedQuestions: values.openedQuestions ? values.openedQuestions.filter(Boolean) : []
                 }
 
-                dispatch(testActions.create(test))
+                if (isEdit) {
+                    test.id = selectedItem.id;
+                }
+
+                const action = isEdit ? testActions.edit : testActions.create;
+
+                dispatch(action(test))
                     .then(() => {
-                        this.setState({
-                            closedQuestions: [],
-                            openedQuestions: []
-                        });
+                        if (!isEdit) {
+                            this.setState({
+                                closedQuestions: [],
+                                openedQuestions: []
+                            });
 
-                        form.resetFields();
+                            form.resetFields();
+                        }
 
-                        message.success('Test has been created successfully', 5);
+                        message.success(`Test has been ${isEdit ? 'edited' : 'created'} successfully`, 5);
                     })
                     .catch(() => message.error('Something went wrong', 5))
                     .finally(() => this.setState({ confirmLoading: false }))
@@ -76,7 +101,13 @@ class TestPopup extends PureComponent {
     };
 
     handleCancel = () => {
+        const { onCancel } = this.props;
+
         this.setState({ visible: false });
+
+        if (onCancel) {
+            onCancel();
+        }
     };
 
     handleAfterClose = () => {
@@ -144,28 +175,29 @@ class TestPopup extends PureComponent {
     };
 
     renderClosedQuestions() {
+        const { form: { getFieldDecorator }, isEdit } = this.props;
         const { closedQuestions } = this.state;
-        const { getFieldDecorator } = this.props.form;
 
         return closedQuestions.map((closedQuestion, index) => (
             <div key={closedQuestion.id} className="d-f jc-fs ai-fs">
                 <div className="d-f flx-6">
                     <Item className="m-r-10 flx-1" required={false} label={index === 0 ? 'Question' : ''}>
-                        {getFieldDecorator(`closedQuestions[${closedQuestion.id}].question`, {
+                        {getFieldDecorator(`closedQuestions[${this.getFieldIndex(closedQuestions, closedQuestion.id)}].question`, {
                             rules: [
                                 {
                                     required: true,
                                     message: ERRORS.required.question,
-                                },
+                                }
                             ],
+                            initialValue: isEdit ? closedQuestion.question : ''
                         })(
                             <Input.TextArea />
                         )}
                     </Item>
                     <Item className="m-l-10 flx-1" required={false} label={index === 0 ? 'Correct answer' : ''}>
-                        {getFieldDecorator(`closedQuestions[${closedQuestion.id}].answer`, {
+                        {getFieldDecorator(`closedQuestions[${this.getFieldIndex(closedQuestions, closedQuestion.id)}].answer`, {
                             valuePropName: 'checked',
-                            initialValue: false
+                            initialValue: isEdit ? closedQuestion.answer : false
                         })(
                             <Switch checkedChildren={<span className="f-s-14">Yes</span>} unCheckedChildren={<span className="f-s-14">No</span>} />
                         )}
@@ -183,32 +215,34 @@ class TestPopup extends PureComponent {
     }
 
     renderOpenedQuestions() {
+        const { form: { getFieldDecorator }, isEdit } = this.props;
         const { openedQuestions } = this.state;
-        const { getFieldDecorator } = this.props.form;
 
         return openedQuestions.map((openedQuestion, index) => (
             <div key={openedQuestion.id} className="d-f jc-fs ai-fs">
                 <div className="d-f flx-6">
                     <Item className="m-r-10 flx-1" required={false} label={index === 0 ? 'Question' : ''}>
-                        {getFieldDecorator(`openedQuestions[${openedQuestion.id}].question`, {
+                        {getFieldDecorator(`openedQuestions[${this.getFieldIndex(openedQuestions, openedQuestion.id)}].question`, {
                             rules: [
                                 {
                                     required: true,
                                     message: ERRORS.required.question,
-                                },
+                                }
                             ],
+                            initialValue: isEdit ? openedQuestion.question : ''
                         })(
                             <Input.TextArea />
                         )}
                     </Item>
                     <Item className="m-l-10 flx-1" required={false} label={index === 0 ? 'Correct answer' : ''}>
-                        {getFieldDecorator(`openedQuestions[${openedQuestion.id}].answer`, {
+                        {getFieldDecorator(`openedQuestions[${this.getFieldIndex(openedQuestions, openedQuestion.id)}].answer`, {
                             rules: [
                                 {
                                     required: true,
                                     message: ERRORS.required.answer,
-                                },
+                                }
                             ],
+                            initialValue: isEdit ? openedQuestion.answer : ''
                         })(
                             <Input.TextArea />
                         )}
@@ -226,7 +260,7 @@ class TestPopup extends PureComponent {
     }
 
     render() {
-        const { children, form: { getFieldDecorator } } = this.props;
+        const { children, form: { getFieldDecorator }, isEdit, selectedItem } = this.props;
         const { visible, confirmLoading } = this.state;
 
         return (
@@ -235,9 +269,9 @@ class TestPopup extends PureComponent {
                     {children}
                 </div>
                 <Modal
-                    title="New test"
+                    title={isEdit ? "Edit test" : "New test"}
                     centered
-                    visible={visible}
+                    visible={visible || !!selectedItem}
                     okText="Create"
                     width={'50%'}
                     onOk={this.handleOk}
@@ -253,8 +287,9 @@ class TestPopup extends PureComponent {
                                         {
                                             required: true,
                                             message: ERRORS.required.title,
-                                        },
+                                        }
                                     ],
+                                    initialValue: isEdit && selectedItem ? selectedItem.title : ''
                                 })(
                                     <Input />
                                 )}
@@ -265,8 +300,9 @@ class TestPopup extends PureComponent {
                                         {
                                             required: true,
                                             message: ERRORS.required.description,
-                                        },
+                                        }
                                     ],
+                                    initialValue: isEdit && selectedItem ? selectedItem.description : ''
                                 })(
                                     <Input.TextArea />
                                 )}

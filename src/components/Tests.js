@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'react-redux';
 
 import * as testActions from '../store/actions/test';
@@ -15,7 +15,8 @@ import TestPopup from './TestPopup';
 class Tests extends PureComponent {
     state = {
         isLoading: false,
-        cardLoadingIds: []
+        cardLoadingIds: [],
+        selectedItem: undefined
     }
 
     componentDidMount() {
@@ -29,12 +30,14 @@ class Tests extends PureComponent {
         });
     }
 
+    handleCancelEditTest = () => this.setState({ selectedItem: undefined })
+
     handleTestAction = id => {
         console.log('action');
     }
 
-    handleTestEdit = id => {
-        console.log('edit');
+    handleTestEdit = item => {
+        this.setState({ selectedItem: item });
     }
 
     handleTestDelete = id => {
@@ -61,54 +64,57 @@ class Tests extends PureComponent {
 
     render() {
         const { tests } = this.props;
-        const { isLoading, cardLoadingIds } = this.state;
+        const { isLoading, cardLoadingIds, selectedItem } = this.state;
 
         return (
-            <List
-                grid={{
-                    gutter: 16,
-                    xs: 2,
-                    sm: 2,
-                    md: 2,
-                    lg: 2,
-                    xl: 3,
-                    xxl: 4
-                }}
-                loading={isLoading}
-                dataSource={[{ title: 'New test' }, ...tests]}
-                renderItem={(item, index) => {
-                    if (!index) {
+            <Fragment>
+                <List
+                    grid={{
+                        gutter: 16,
+                        xs: 2,
+                        sm: 2,
+                        md: 2,
+                        lg: 2,
+                        xl: 3,
+                        xxl: 4
+                    }}
+                    loading={isLoading}
+                    dataSource={[{ title: 'New test' }, ...tests]}
+                    renderItem={(item, index) => {
+                        if (!index) {
+                            return (
+                                <List.Item>
+                                    <TestPopup>
+                                        <CardItem
+                                            hoverable
+                                            bordered
+                                        >
+                                            <div className="action-description">
+                                                <div><Icon className="f-s-50" type="plus" /></div>
+                                                <div className="f-s-16">{item.title}</div>
+                                            </div>
+                                        </CardItem>
+                                    </TestPopup>
+                                </List.Item>
+                            );
+                        }
+
                         return (
                             <List.Item>
-                                <TestPopup>
-                                    <CardItem
-                                        hoverable
-                                        bordered
-                                    >
-                                        <div className="action-description">
-                                            <div><Icon className="f-s-50" type="plus" /></div>
-                                            <div className="f-s-16">{item.title}</div>
-                                        </div>
-                                    </CardItem>
-                                </TestPopup>
+                                <Card
+                                    actionCard={index === 0}
+                                    item={item}
+                                    loading={cardLoadingIds.includes(item.id)}
+                                    onAction={this.handleTestAction}
+                                    onEdit={this.handleTestEdit}
+                                    onDelete={this.handleTestDelete}
+                                />
                             </List.Item>
-                        );
-                    }
-
-                    return (
-                        <List.Item>
-                            <Card
-                                actionCard={index === 0}
-                                item={item}
-                                loading={cardLoadingIds.includes(item.id)}
-                                onAction={this.handleTestAction}
-                                onEdit={this.handleTestEdit}
-                                onDelete={this.handleTestDelete}
-                            />
-                        </List.Item>
-                    )
-                }}
-            />
+                        )
+                    }}
+                />
+                <TestPopup isEdit selectedItem={selectedItem} onCancel={this.handleCancelEditTest} />
+            </Fragment>
         );
     }
 }

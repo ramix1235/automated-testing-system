@@ -4,9 +4,7 @@ import { connect } from 'react-redux';
 import * as userActions from '../store/actions/user';
 
 import {
-    Menu,
-    List,
-    Button
+    Menu
 } from 'antd';
 import Tests from '../components/Tests';
 
@@ -17,7 +15,7 @@ const MENU = [
     },
     {
         id: '2',
-        name: 'Management'
+        name: 'Results'
     }
 ]
 const defaultSelectedMenu = '1';
@@ -38,8 +36,6 @@ class Main extends PureComponent {
     }
 
     handleMenuClick = e => {
-        console.log('click ', e);
-
         this.setState({ selectedMenu: e.key });
     }
 
@@ -71,8 +67,6 @@ class Main extends PureComponent {
     }
 
     render() {
-        // const { user } = this.props;
-
         return (
             <div className="d-f w-100 m-t-15">
                 <div className="flx-1 m-10">
@@ -86,6 +80,4 @@ class Main extends PureComponent {
     }
 }
 
-export default connect(state => ({
-    user: state.user.info
-}))(Main);
+export default connect()(Main);

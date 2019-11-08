@@ -13,7 +13,9 @@ export default class Card extends PureComponent {
 
         if (loading) return;
 
-        onAction(item.id);
+        if (onAction) {
+            onAction(item.id);
+        }
     }
 
     handleEdit = () => {
@@ -21,7 +23,9 @@ export default class Card extends PureComponent {
 
         if (loading) return;
 
-        onEdit(item.id);
+        if (onEdit) {
+            onEdit(item);
+        }
     }
 
     handleDelete = () => {
@@ -29,7 +33,9 @@ export default class Card extends PureComponent {
 
         if (loading) return;
 
-        onDelete(item.id);
+        if (onDelete) {
+            onDelete(item.id);
+        }
     }
 
     render() {

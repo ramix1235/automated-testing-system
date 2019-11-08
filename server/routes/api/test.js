@@ -10,7 +10,7 @@ router.post('/', auth.required, (req, res, next) => {
     if (!test) {
         return res.status(422).json({
             errors: {
-                test: 'is required',
+                test: 'is required'
             },
         });
     }
@@ -22,9 +22,18 @@ router.post('/', auth.required, (req, res, next) => {
 });
 
 router.put('/', auth.required, (req, res, next) => {
-    console.log(req.body);
+    const { body: { test } } = req;
 
-    return res.sendStatus(400);
+    if (!test) {
+        return res.status(422).json({
+            errors: {
+                test: 'is required'
+            },
+        });
+    }
+
+    return Test.findOneAndUpdate({ _id: test.id }, test)
+        .then(() => getAllTests(res));
 });
 
 router.delete('/:id', auth.required, (req, res, next) => {
@@ -33,7 +42,7 @@ router.delete('/:id', auth.required, (req, res, next) => {
     if (!id) {
         return res.status(422).json({
             errors: {
-                id: 'is required',
+                id: 'is required'
             },
         });
     }
