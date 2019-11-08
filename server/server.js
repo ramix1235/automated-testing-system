@@ -28,15 +28,17 @@ app.use(session({ secret: 'passport-tutorial', cookie: { maxAge: 60000 }, resave
 
 app.use(require('./routes'));
 
-app.use((err, req, res) => {
-    res.status(err.status || 500);
+app.use((err, req, res, next) => {
+    console.log(err);
+    console.log(res);
+    // res.status(err.status || 500);
 
-    res.json({
-        errors: {
-            message: err.message,
-            error: {},
-        },
-    });
+    // res.json({
+    //     errors: {
+    //         message: err.message,
+    //         error: {},
+    //     },
+    // });
 });
 
 app.listen(port, () => console.log(`Listening on port ${port}`));

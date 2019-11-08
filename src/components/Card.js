@@ -34,7 +34,6 @@ export default class Card extends PureComponent {
 
     render() {
         const {
-            item,
             item: {
                 title,
                 description

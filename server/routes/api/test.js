@@ -18,26 +18,28 @@ router.post('/', auth.required, (req, res, next) => {
     const newTest = new Test(test);
 
     return newTest.save()
-        .then(() => {
-            const testProjection = {
-                __v: false
-            };
-
-            return Test.find({}, testProjection)
-                .then(tests => {
-                    return res.json({
-                        tests: tests.map(test => transformTest(test))
-                    });
-                })
-        });
+        .then(() => getAllTests(res));
 });
 
 router.put('/', auth.required, (req, res, next) => {
-    console.log(req.query.id);
+    console.log(req.body);
+
+    return res.sendStatus(400);
 });
 
-router.delete('/', auth.required, (req, res, next) => {
-    console.log(req.body);
+router.delete('/:id', auth.required, (req, res, next) => {
+    const id = req.params.id;
+
+    if (!id) {
+        return res.status(422).json({
+            errors: {
+                id: 'is required',
+            },
+        });
+    }
+
+    return Test.findOneAndRemove({ _id: id })
+        .then(() => getAllTests(res));
 });
 
 router.get('/:id?', auth.required, (req, res, next) => {
@@ -47,12 +49,7 @@ router.get('/:id?', auth.required, (req, res, next) => {
     };
 
     if (!id) {
-        return Test.find({}, testProjection)
-            .then(tests => {
-                return res.json({
-                    tests: tests.map(test => transformTest(test))
-                });
-            })
+        return getAllTests(res);
     }
 
     return Test.findById(id, testProjection)
@@ -64,6 +61,20 @@ router.get('/:id?', auth.required, (req, res, next) => {
             return res.json({ test: transformTest(test) });
         });
 });
+
+function getAllTests(res) {
+    const testProjection = {
+        __v: false
+    };
+
+    return Test.find({}, testProjection)
+        .sort('-createdAt')
+        .then(tests => {
+            return res.json({
+                tests: tests.map(test => transformTest(test))
+            });
+        })
+}
 
 function transformTest(test) {
     const { _doc } = test;

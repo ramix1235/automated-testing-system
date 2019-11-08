@@ -18,6 +18,11 @@ const TestSchema = new Schema({
     closedQuestions: [closedQuestionSchema],
     openedQuestions: [openedQuestionSchema],
     author: Schema.Types.ObjectId
+}, {
+    timestamps: {
+        createdAt: 'createdAt',
+        updatedAt: 'updatedAt'
+    },
 });
 
 mongoose.model('Test', TestSchema);

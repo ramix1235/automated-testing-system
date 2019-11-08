@@ -6,63 +6,11 @@ import * as testActions from '../store/actions/test';
 import {
     List,
     Icon,
+    message,
     Card as CardItem
 } from 'antd';
 import Card from '../components/Card'
 import TestPopup from './TestPopup';
-
-// const cards = [
-//     {
-//         id: '0',
-//         title: 'Add new test',
-//         description: ''
-//     },
-//     {
-//         id: '1',
-//         title: 't vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti',
-//         description: 't vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium'
-//     },
-//     {
-//         id: '2',
-//         title: 'New Test2',
-//         description: 't vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium t vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium'
-//     },
-//     {
-//         id: '3',
-//         title: 'New Test3',
-//         description: 'Description3'
-//     },
-//     {
-//         id: '4',
-//         title: 'New Test4',
-//         description: 'Description4'
-//     },
-//     {
-//         id: '5',
-//         title: 'New Test5',
-//         description: 'Description5'
-//     },
-//     {
-//         id: '6',
-//         title: 'New Test6',
-//         description: 'Description6'
-//     },
-//     {
-//         id: '7',
-//         title: 'New Test7',
-//         description: 'Description7'
-//     },
-//     {
-//         id: '8',
-//         title: 'New Test8',
-//         description: 'Description8'
-//     },
-//     {
-//         id: '9',
-//         title: 'New Test9',
-//         description: 'Description9'
-//     },
-// ];
 
 class Tests extends PureComponent {
     state = {
@@ -73,7 +21,7 @@ class Tests extends PureComponent {
     componentDidMount() {
         const { dispatch } = this.props;
 
-        dispatch(testActions.getTest('5dc57cf2d2f26e43b8744bd3'));
+        // dispatch(testActions.getTest('5dc57cf2d2f26e43b8744bd3'));
 
         this.setState({ isLoading: true }, () => {
             dispatch(testActions.getAllTests())
@@ -90,16 +38,23 @@ class Tests extends PureComponent {
     }
 
     handleTestDelete = id => {
+        const { dispatch } = this.props;
+
         this.setState(state => ({ cardLoadingIds: [...state.cardLoadingIds, id] }), () => {
             setTimeout(() => {
-                this.setState(state => {
-                    const idIndex = state.cardLoadingIds.findIndex(i => i === id);
-                    const cardLoadingIds = [...state.cardLoadingIds];
+                dispatch(testActions.remove(id))
+                    .then(() => message.success('Test has been deleted successfully', 5))
+                    .catch(() => message.error('Something went wrong', 5))
+                    .finally(() => {
+                        this.setState(state => {
+                            const idIndex = state.cardLoadingIds.findIndex(i => i === id);
+                            const cardLoadingIds = [...state.cardLoadingIds];
 
-                    cardLoadingIds.splice(idIndex, 1);
+                            cardLoadingIds.splice(idIndex, 1);
 
-                    return { cardLoadingIds };
-                });
+                            return { cardLoadingIds };
+                        });
+                    })
             }, 3000);
         });
     }

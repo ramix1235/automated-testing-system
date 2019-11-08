@@ -52,15 +52,13 @@ class TestPopup extends PureComponent {
                     author: user.id,
                     title: values.title,
                     description: values.description,
-                    closedQuestions: values.closedQuestions,
-                    openedQuestions: values.openedQuestions,
+                    closedQuestions: values.closedQuestions ? values.closedQuestions.filter(Boolean) : [],
+                    openedQuestions: values.openedQuestions ? values.openedQuestions.filter(Boolean) : []
                 }
 
                 dispatch(testActions.create(test))
                     .then(() => {
                         this.setState({
-                            // visible: false,
-                            confirmLoading: false,
                             closedQuestions: [],
                             openedQuestions: []
                         });
@@ -69,11 +67,8 @@ class TestPopup extends PureComponent {
 
                         message.success('Test has been created successfully', 5);
                     })
-                    .catch(() => {
-                        message.error('Something went wrong', 5);
-
-                        this.setState({ isLoading: false });
-                    })
+                    .catch(() => message.error('Something went wrong', 5))
+                    .finally(() => this.setState({ confirmLoading: false }))
             });
 
         });
