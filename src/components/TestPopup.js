@@ -272,7 +272,7 @@ class TestPopup extends PureComponent {
                     title={isEdit ? "Edit test" : "New test"}
                     centered
                     visible={visible || !!selectedItem}
-                    okText="Create"
+                    okText={isEdit ? "Update" : "Create"}
                     width={'50%'}
                     onOk={this.handleOk}
                     confirmLoading={confirmLoading}

@@ -14,7 +14,7 @@ export default class Card extends PureComponent {
         if (loading) return;
 
         if (onAction) {
-            onAction(item.id);
+            onAction(item);
         }
     }
 

@@ -11,6 +11,7 @@ import {
 } from 'antd';
 import Card from '../components/Card'
 import TestPopup from './TestPopup';
+import PassingTest from './PassingTest';
 
 class Tests extends PureComponent {
     state = {
@@ -30,15 +31,17 @@ class Tests extends PureComponent {
         });
     }
 
-    handleCancelEditTest = () => this.setState({ selectedItem: undefined })
-
-    handleTestAction = id => {
-        console.log('action');
+    handleTestAction = item => {
+        this.setState({ passingTest: item });
     }
+
+    handlePassingTestClose = () => this.setState({ passingTest: undefined })
 
     handleTestEdit = item => {
         this.setState({ selectedItem: item });
     }
+
+    handleCancelEditTest = () => this.setState({ selectedItem: undefined })
 
     handleTestDelete = id => {
         const { dispatch } = this.props;
@@ -62,9 +65,13 @@ class Tests extends PureComponent {
         });
     }
 
-    render() {
+    renderTests() {
         const { tests } = this.props;
-        const { isLoading, cardLoadingIds, selectedItem } = this.state;
+        const {
+            isLoading,
+            cardLoadingIds,
+            selectedItem
+        } = this.state;
 
         return (
             <Fragment>
@@ -115,6 +122,16 @@ class Tests extends PureComponent {
                 />
                 <TestPopup isEdit selectedItem={selectedItem} onCancel={this.handleCancelEditTest} />
             </Fragment>
+        );
+    }
+
+    render() {
+        const { passingTest } = this.state;
+
+        return (
+            <div>
+                {passingTest ? <PassingTest passingTest={passingTest} onClose={this.handlePassingTestClose} /> : this.renderTests()}
+            </div>
         );
     }
 }
