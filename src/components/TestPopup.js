@@ -78,8 +78,6 @@ class TestPopup extends PureComponent {
     removeClosedQuestion = closedQuestion => {
         const { closedQuestions } = this.state;
 
-        if (closedQuestions.length === 1) return;
-
         const questionIndex = closedQuestions.findIndex(cq => cq.id === closedQuestion.id);
         const updatedClosedQuestions = [...closedQuestions];
 
@@ -105,8 +103,6 @@ class TestPopup extends PureComponent {
 
     removeOpenedQuestion = openedQuestion => {
         const { openedQuestions } = this.state;
-
-        if (openedQuestions.length === 1) return;
 
         const questionIndex = openedQuestions.findIndex(cq => cq.id === openedQuestion.id);
         const updatedOpenedQuestions = [...openedQuestions];
@@ -159,13 +155,11 @@ class TestPopup extends PureComponent {
                     </Item>
                 </div>
                 <Item required={false} className="f-s-20 flx-1" style={{ marginTop: index === 0 ? 40 : 0 }}>
-                    {closedQuestions.length > 1 ? (
-                        <Icon
-                            className="dynamic-delete-button"
-                            type="minus-circle-o"
-                            onClick={() => this.removeClosedQuestion(closedQuestion)}
-                        />
-                    ) : null}
+                    <Icon
+                        className="dynamic-delete-button"
+                        type="minus-circle-o"
+                        onClick={() => this.removeClosedQuestion(closedQuestion)}
+                    />
                 </Item>
             </div>
         ));
@@ -204,13 +198,11 @@ class TestPopup extends PureComponent {
                     </Item>
                 </div>
                 <Item className="m-l-20 f-s-20 flx-1" required={false} style={{ marginTop: index === 0 ? 40 : 0 }}>
-                    {openedQuestions.length > 1 ? (
-                        <Icon
-                            className="dynamic-delete-button"
-                            type="minus-circle-o"
-                            onClick={() => this.removeOpenedQuestion(openedQuestion)}
-                        />
-                    ) : null}
+                    <Icon
+                        className="dynamic-delete-button"
+                        type="minus-circle-o"
+                        onClick={() => this.removeOpenedQuestion(openedQuestion)}
+                    />
                 </Item>
             </div>
         ));
