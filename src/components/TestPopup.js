@@ -6,7 +6,8 @@ import {
     Modal,
     Input,
     Icon,
-    Switch
+    Switch,
+    message
 } from 'antd';
 
 import ERRORS from '../constants/errors';
@@ -17,16 +18,8 @@ class TestPopup extends PureComponent {
     state = {
         visible: false,
         confirmLoading: false,
-        closedQuestions: [{
-            id: 0,
-            question: '',
-            answer: ''
-        }],
-        openedQuestions: [{
-            id: 0,
-            question: '',
-            answer: ''
-        }]
+        closedQuestions: [],
+        openedQuestions: []
     };
 
     showModal = () => {
@@ -37,6 +30,12 @@ class TestPopup extends PureComponent {
 
     handleOk = () => {
         const { form } = this.props;
+        const { openedQuestions, closedQuestions } = this.state;
+        const isNoQuestions = !openedQuestions.length && !closedQuestions.length
+
+        if (isNoQuestions) {
+            return message.warning('You should add at least 1 question', 5);
+        }
 
         form.validateFields((err, values) => {
             if (err) return;
@@ -48,16 +47,8 @@ class TestPopup extends PureComponent {
                     this.setState({
                         // visible: false,
                         confirmLoading: false,
-                        closedQuestions: [{
-                            id: 0,
-                            question: '',
-                            answer: ''
-                        }],
-                        openedQuestions: [{
-                            id: 0,
-                            question: '',
-                            answer: ''
-                        }]
+                        closedQuestions: [],
+                        openedQuestions: []
                     });
 
                     form.resetFields();
@@ -77,16 +68,8 @@ class TestPopup extends PureComponent {
 
         this.setState({
             confirmLoading: false,
-            closedQuestions: [{
-                id: 0,
-                question: '',
-                answer: false
-            }],
-            openedQuestions: [{
-                id: 0,
-                question: '',
-                answer: ''
-            }]
+            closedQuestions: [],
+            openedQuestions: []
         });
 
         form.resetFields();
@@ -112,7 +95,7 @@ class TestPopup extends PureComponent {
             closedQuestions: [
                 ...state.closedQuestions,
                 {
-                    id: closedQuestions[closedQuestions.length - 1].id + 1,
+                    id: closedQuestions.length ? closedQuestions[closedQuestions.length - 1].id + 1 : 0,
                     question: '',
                     answer: false
                 }
@@ -140,7 +123,7 @@ class TestPopup extends PureComponent {
             openedQuestions: [
                 ...state.openedQuestions,
                 {
-                    id: openedQuestions[openedQuestions.length - 1].id + 1,
+                    id: openedQuestions.length ? openedQuestions[openedQuestions.length - 1].id + 1 : 0,
                     question: '',
                     answer: ''
                 }
@@ -234,7 +217,7 @@ class TestPopup extends PureComponent {
     }
 
     render() {
-        const { children } = this.props;
+        const { children, form: { getFieldDecorator } } = this.props;
         const { visible, confirmLoading } = this.state;
 
         return (
@@ -255,6 +238,30 @@ class TestPopup extends PureComponent {
                 >
                     <Form>
                         <div>
+                            <Item className="w-60" label='Title'>
+                                {getFieldDecorator('title', {
+                                    rules: [
+                                        {
+                                            required: true,
+                                            message: ERRORS.required.title,
+                                        },
+                                    ],
+                                })(
+                                    <Input />
+                                )}
+                            </Item>
+                            <Item className="w-60" label='Description'>
+                                {getFieldDecorator('description', {
+                                    rules: [
+                                        {
+                                            required: true,
+                                            message: ERRORS.required.description,
+                                        },
+                                    ],
+                                })(
+                                    <Input.TextArea />
+                                )}
+                            </Item>
                             <div className="m-b-10">Closed Questions:</div>
                             {this.renderClosedQuestions()}
                             <Item className="d-f jc-fs ai-c">

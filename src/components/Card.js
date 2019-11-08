@@ -3,7 +3,8 @@ import Dotdotdot from 'react-dotdotdot'
 
 import {
     Card as CardItem,
-    Icon
+    Icon,
+    Popconfirm
 } from 'antd';
 
 export default class Card extends PureComponent {
@@ -48,7 +49,14 @@ export default class Card extends PureComponent {
                 actions={[
                     <Icon style={loading ? { color: '#5c5c5c', cursor: 'default' } : null} type="play-square" key="play-square" onClick={this.handleAction} />,
                     <Icon style={loading ? { color: '#5c5c5c', cursor: 'default' } : null} className="warning" type="edit" key="edit" onClick={this.handleEdit} />,
-                    <Icon style={loading ? { color: '#5c5c5c', cursor: 'default' } : null} className="dangerous" type="delete" key="delete" onClick={this.handleDelete} />
+                    <Popconfirm
+                        title="Are you sure delete this test?"
+                        onConfirm={this.handleDelete}
+                        okText="Yes"
+                        cancelText="No"
+                    >
+                        <Icon style={loading ? { color: '#5c5c5c', cursor: 'default' } : null} className="dangerous" type="delete" key="delete" />
+                    </Popconfirm>
                 ]}
             >
                 <CardItem.Meta
