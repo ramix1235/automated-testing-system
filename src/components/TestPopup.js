@@ -5,50 +5,34 @@ import {
     Button,
     Modal,
     Input,
-    Icon
+    Icon,
+    Switch
 } from 'antd';
 
 import ERRORS from '../constants/errors';
 
 const { Item } = Form;
 
-let id = 1;
-
 class TestPopup extends PureComponent {
     state = {
         visible: false,
         confirmLoading: false,
+        closedQuestions: [{
+            id: 0,
+            question: '',
+            answer: ''
+        }],
+        openedQuestions: [{
+            id: 0,
+            question: '',
+            answer: ''
+        }]
     };
 
     showModal = () => {
         this.setState({
             visible: true,
         });
-    };
-
-    remove = k => {
-        const { form } = this.props;
-
-        // can use data-binding to get
-        const keys = form.getFieldValue('keys');
-
-        // We need at least one question
-        if (keys.length === 1) return;
-
-        // can use data-binding to set
-        form.setFieldsValue({ keys: keys.filter(key => key !== k) });
-    };
-
-    add = () => {
-        const { form } = this.props;
-
-        // can use data-binding to get
-        const keys = form.getFieldValue('keys');
-        const nextKeys = [...keys, id++];
-
-        // can use data-binding to set
-        // important! notify form to detect changes
-        form.setFieldsValue({ keys: nextKeys });
     };
 
     handleOk = () => {
@@ -59,15 +43,21 @@ class TestPopup extends PureComponent {
 
             console.log('Received values of form: ', values);
 
-            const { keys, names } = values;
-            console.log('Merged values:', keys.map(key => names[key]));
-
             this.setState({ confirmLoading: true }, () => {
                 setTimeout(() => {
-
                     this.setState({
                         // visible: false,
                         confirmLoading: false,
+                        closedQuestions: [{
+                            id: 0,
+                            question: '',
+                            answer: ''
+                        }],
+                        openedQuestions: [{
+                            id: 0,
+                            question: '',
+                            answer: ''
+                        }]
                     });
 
                     form.resetFields();
@@ -85,40 +75,162 @@ class TestPopup extends PureComponent {
     handleAfterClose = () => {
         const { form } = this.props;
 
-        form.resetFields()
+        this.setState({
+            confirmLoading: false,
+            closedQuestions: [{
+                id: 0,
+                question: '',
+                answer: false
+            }],
+            openedQuestions: [{
+                id: 0,
+                question: '',
+                answer: ''
+            }]
+        });
+
+        form.resetFields();
     }
 
-    renderDynamicFormItems() {
-        const { getFieldDecorator, getFieldValue } = this.props.form;
+    removeClosedQuestion = closedQuestion => {
+        const { closedQuestions } = this.state;
 
-        getFieldDecorator('keys', { initialValue: [0] });
-        const keys = getFieldValue('keys');
+        if (closedQuestions.length === 1) return;
 
-        const formItems = keys.map(k => (
-            <Item required={false} key={k}>
-                {getFieldDecorator(`names[${k}]`, {
-                    // validateTrigger: ['onChange', 'onBlur'],
-                    rules: [
-                        {
-                            required: true,
-                            // whitespace: true,
-                            message: ERRORS.required.question,
-                        },
-                    ],
-                })(
-                    <Input style={{ width: '60%' }} />
-                )}
-                {keys.length > 1 ? (
-                    <Icon
-                        className="dynamic-delete-button m-l-10 f-s-20"
-                        type="minus-circle-o"
-                        onClick={() => this.remove(k)}
-                    />
-                ) : null}
-            </Item>
+        const questionIndex = closedQuestions.findIndex(cq => cq.id === closedQuestion.id);
+        const updatedClosedQuestions = [...closedQuestions];
+
+        updatedClosedQuestions.splice(questionIndex, 1);
+
+        this.setState({ closedQuestions: updatedClosedQuestions });
+    };
+
+    addClosedQuestion = () => {
+        const { closedQuestions } = this.state;
+
+        this.setState(state => ({
+            closedQuestions: [
+                ...state.closedQuestions,
+                {
+                    id: closedQuestions[closedQuestions.length - 1].id + 1,
+                    question: '',
+                    answer: false
+                }
+            ]
+        }));
+    };
+
+    removeOpenedQuestion = openedQuestion => {
+        const { openedQuestions } = this.state;
+
+        if (openedQuestions.length === 1) return;
+
+        const questionIndex = openedQuestions.findIndex(cq => cq.id === openedQuestion.id);
+        const updatedOpenedQuestions = [...openedQuestions];
+
+        updatedOpenedQuestions.splice(questionIndex, 1);
+
+        this.setState({ openedQuestions: updatedOpenedQuestions });
+    };
+
+    addOpenedQuestion = () => {
+        const { openedQuestions } = this.state;
+
+        this.setState(state => ({
+            openedQuestions: [
+                ...state.openedQuestions,
+                {
+                    id: openedQuestions[openedQuestions.length - 1].id + 1,
+                    question: '',
+                    answer: ''
+                }
+            ]
+        }));
+    };
+
+    renderClosedQuestions() {
+        const { closedQuestions } = this.state;
+        const { getFieldDecorator } = this.props.form;
+
+        return closedQuestions.map((closedQuestion, index) => (
+            <div key={closedQuestion.id} className="d-f jc-fs ai-fs">
+                <div className="d-f flx-6">
+                    <Item className="m-r-10 flx-1" required={false} label={index === 0 ? 'Question' : ''}>
+                        {getFieldDecorator(`closedQuestions[${closedQuestion.id}].question`, {
+                            rules: [
+                                {
+                                    required: true,
+                                    message: ERRORS.required.question,
+                                },
+                            ],
+                        })(
+                            <Input.TextArea />
+                        )}
+                    </Item>
+                    <Item className="m-l-10 flx-1" required={false} label={index === 0 ? 'Correct answer' : ''}>
+                        {getFieldDecorator(`closedQuestions[${closedQuestion.id}].answer`, {
+                            valuePropName: 'checked'
+                        })(
+                            <Switch checkedChildren={<span className="f-s-14">Yes</span>} unCheckedChildren={<span className="f-s-14">No</span>} />
+                        )}
+                    </Item>
+                </div>
+                <Item required={false} className="f-s-20 flx-1" style={{ marginTop: index === 0 ? 40 : 0 }}>
+                    {closedQuestions.length > 1 ? (
+                        <Icon
+                            className="dynamic-delete-button"
+                            type="minus-circle-o"
+                            onClick={() => this.removeClosedQuestion(closedQuestion)}
+                        />
+                    ) : null}
+                </Item>
+            </div>
         ));
+    }
 
-        return formItems;
+    renderOpenedQuestions() {
+        const { openedQuestions } = this.state;
+        const { getFieldDecorator } = this.props.form;
+
+        return openedQuestions.map((openedQuestion, index) => (
+            <div key={openedQuestion.id} className="d-f jc-fs ai-fs">
+                <div className="d-f flx-6">
+                    <Item className="m-r-10 flx-1" required={false} label={index === 0 ? 'Question' : ''}>
+                        {getFieldDecorator(`openedQuestions[${openedQuestion.id}].question`, {
+                            rules: [
+                                {
+                                    required: true,
+                                    message: ERRORS.required.question,
+                                },
+                            ],
+                        })(
+                            <Input.TextArea />
+                        )}
+                    </Item>
+                    <Item className="m-l-10 flx-1" required={false} label={index === 0 ? 'Correct answer' : ''}>
+                        {getFieldDecorator(`openedQuestions[${openedQuestion.id}].answer`, {
+                            rules: [
+                                {
+                                    required: true,
+                                    message: ERRORS.required.answer,
+                                },
+                            ],
+                        })(
+                            <Input.TextArea />
+                        )}
+                    </Item>
+                </div>
+                <Item className="m-l-20 f-s-20 flx-1" required={false} style={{ marginTop: index === 0 ? 40 : 0 }}>
+                    {openedQuestions.length > 1 ? (
+                        <Icon
+                            className="dynamic-delete-button"
+                            type="minus-circle-o"
+                            onClick={() => this.removeOpenedQuestion(openedQuestion)}
+                        />
+                    ) : null}
+                </Item>
+            </div>
+        ));
     }
 
     render() {
@@ -135,23 +247,37 @@ class TestPopup extends PureComponent {
                     centered
                     visible={visible}
                     okText="Create"
+                    width={'50%'}
                     onOk={this.handleOk}
                     confirmLoading={confirmLoading}
                     onCancel={this.handleCancel}
                     afterClose={this.handleAfterClose}
                 >
                     <Form>
-                        <div className="m-b-10">Questions:</div>
-                        {this.renderDynamicFormItems()}
-                        <Item>
-                            <Button
-                                type="dashed"
-                                onClick={this.add}
-                                style={{ width: '60%' }}
-                            >
-                                Add question
-                            </Button>
-                        </Item>
+                        <div>
+                            <div className="m-b-10">Closed Questions:</div>
+                            {this.renderClosedQuestions()}
+                            <Item className="d-f jc-fs ai-c">
+                                <Button
+                                    type="dashed"
+                                    onClick={this.addClosedQuestion}
+                                >
+                                    Add
+                                </Button>
+                            </Item>
+                        </div>
+                        <div className="m-t-60">
+                            <div className="m-b-10">Opened Questions:</div>
+                            {this.renderOpenedQuestions()}
+                            <Item className="d-f jc-fs ai-c">
+                                <Button
+                                    type="dashed"
+                                    onClick={this.addOpenedQuestion}
+                                >
+                                    Add
+                                </Button>
+                            </Item>
+                        </div>
                     </Form>
                 </Modal>
             </div>

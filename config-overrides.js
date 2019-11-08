@@ -30,12 +30,6 @@ module.exports = override(
       '@menu-item-color': '#828282',
       '@menu-highlight-color': '#1DA57A',
 
-      // '@modal-body-padding': '24px',
-      // '@modal-header-bg': '@component-background',
-      // '@modal-heading-color': '@heading-color',
-      // '@modal-footer-bg': 'transparent',
-      // '@modal-footer-border-color-split': '@border-color-split',
-
       '@card-head-color': '#1DA57A',
       '@card-actions-background': '#16171b',
     },

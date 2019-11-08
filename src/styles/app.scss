@@ -21,6 +21,18 @@
   color: $gray;
 }
 
+.ant-switch {
+  background-color: $gray;
+
+  &.ant-switch-checked {
+    background-color: $darkgreen;
+  }
+
+  .ant-switch-inner {
+    color: $darkgray;
+  }
+}
+
 .ant-card {
   .action-description {
     display: flex;
