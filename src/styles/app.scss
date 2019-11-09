@@ -16,9 +16,36 @@
 
 
 // ANTD
+.ant-collapse {
+  .ant-collapse-item {
+    background-color: $darkgray !important;
+
+    .ant-collapse-header {
+      background-color: $blackgray;
+
+      .anticon {
+        color: $gray;
+      }
+    }
+  
+    .ant-collapse-content-box {
+      background-color: $darkgray;
+    }
+  }
+}
 
 .ant-empty-description {
   color: $gray;
+}
+
+.ant-menu-vertical {
+  border-right: none;
+}
+
+.ant-modal {
+  .ant-modal-close-icon {
+    color: $gray;
+  }
 }
 
 .ant-switch {
@@ -31,10 +58,6 @@
   .ant-switch-inner {
     color: $darkgray;
   }
-}
-
-.ant-modal-close-icon {
-  color: $gray;
 }
 
 .ant-card {
@@ -114,8 +137,4 @@
   .ant-form-explain {
     font-size: 13px;
   }
-}
-
-.ant-menu-vertical {
-  border-right: none;
 }

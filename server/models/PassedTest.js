@@ -16,6 +16,7 @@ const openedQuestionSchema = new Schema({
 
 const PassedTestSchema = new Schema({
     title: String,
+    description: String,
     closedQuestions: [closedQuestionSchema],
     openedQuestions: [openedQuestionSchema],
     totalEvaluation: Number,

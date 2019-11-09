@@ -10,8 +10,10 @@ import {
     Card as CardItem
 } from 'antd';
 import Card from '../components/Card'
-import TestPopup from './TestPopup';
-import PassingTestPopup from './PassingTestPopup';
+import TestPopup from '../components/TestPopup';
+import PassingTestPopup from '../components/PassingTestPopup';
+
+const { Item } = List;
 
 class Tests extends PureComponent {
     state = {
@@ -88,7 +90,7 @@ class Tests extends PureComponent {
                     renderItem={(item, index) => {
                         if (!index) {
                             return (
-                                <List.Item>
+                                <Item>
                                     <TestPopup>
                                         <CardItem
                                             hoverable
@@ -100,12 +102,12 @@ class Tests extends PureComponent {
                                             </div>
                                         </CardItem>
                                     </TestPopup>
-                                </List.Item>
+                                </Item>
                             );
                         }
 
                         return (
-                            <List.Item>
+                            <Item>
                                 <Card
                                     item={item}
                                     loading={cardLoadingIds.includes(item.id)}
@@ -113,7 +115,7 @@ class Tests extends PureComponent {
                                     onEdit={this.handleTestEdit}
                                     onDelete={this.handleTestDelete}
                                 />
-                            </List.Item>
+                            </Item>
                         )
                     }}
                 />

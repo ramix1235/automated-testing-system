@@ -6,7 +6,8 @@ import * as userActions from '../store/actions/user';
 import {
     Menu
 } from 'antd';
-import Tests from '../components/Tests';
+import Tests from './Tests';
+import History from './History';
 
 const MENU = [
     {
@@ -18,12 +19,11 @@ const MENU = [
         name: 'History'
     }
 ]
-const defaultSelectedMenu = '1';
 
 class Main extends PureComponent {
     state = {
         isLoading: false,
-        selectedMenu: defaultSelectedMenu
+        selectedMenu: MENU[0].id
     }
 
     componentDidMount() {
@@ -44,7 +44,7 @@ class Main extends PureComponent {
 
         return (
             <Menu
-                defaultSelectedKeys={[defaultSelectedMenu]}
+                defaultSelectedKeys={[MENU[0].id]}
                 selectedKeys={[selectedMenu]}
                 onClick={this.handleMenuClick}
             >
@@ -58,8 +58,8 @@ class Main extends PureComponent {
         let content = null;
 
         switch (selectedMenu) {
-            case '1': content = <Tests />; break;
-            case '2': break;
+            case MENU[0].id: content = <Tests />; break;
+            case MENU[1].id: content = <History />; break;
             default: break;
         }
 

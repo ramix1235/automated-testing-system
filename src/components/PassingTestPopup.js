@@ -42,6 +42,7 @@ class PassingTestPopup extends PureComponent {
                 const passedTest = {
                     user: user.id,
                     title: test.title,
+                    description: test.description,
                     closedQuestions: values.closedQuestions ? values.closedQuestions.map((answer, index) => ({
                         question: test.closedQuestions[index].question,
                         answer
