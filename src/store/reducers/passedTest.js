@@ -10,6 +10,7 @@ export default function (state = initialState, action) {
 
     switch (action.type) {
         case actions.CREATE_PASSED_TEST:
+        case actions.REMOVE_PASSED_TEST:
         case actions.GET_ALL_PASSED_TESTS: {
             return { ...state, passedTests };
         }

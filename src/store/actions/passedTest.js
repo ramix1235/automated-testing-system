@@ -1,6 +1,7 @@
 import * as API from '../../API';
 
 export const CREATE_PASSED_TEST = 'CREATE_PASSED_TEST';
+export const REMOVE_PASSED_TEST = 'REMOVE_PASSED_TEST';
 export const GET_PASSED_TEST = 'GET_PASSED_TEST';
 export const GET_ALL_PASSED_TESTS = 'GET_ALL_PASSED_TESTS';
 
@@ -12,7 +13,15 @@ export function create(passedTest) {
         }));
 };
 
-export function getPassedTest(id) {
+export function remove(id) {
+    return dispatch => API.removePassedTest(id)
+        .then(response => dispatch({
+            type: REMOVE_PASSED_TEST,
+            data: response.data
+        }));
+};
+
+export function get(id) {
     return dispatch => API.getPassedTest(id)
         .then(response => dispatch({
             type: GET_PASSED_TEST,

@@ -5,12 +5,14 @@ const { Schema } = mongoose;
 const closedQuestionSchema = new Schema({
     question: String,
     answer: Boolean,
+    etalon: Boolean,
     evaluation: Number
 });
 
 const openedQuestionSchema = new Schema({
     question: String,
     answer: String,
+    etalon: String,
     evaluation: Number
 });
 

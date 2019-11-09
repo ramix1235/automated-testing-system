@@ -5,6 +5,7 @@ import * as passedTestActions from '../store/actions/passedTest';
 
 import {
     List,
+    message
 } from 'antd';
 import Collapse from '../components/Collapse'
 
@@ -26,12 +27,33 @@ class History extends PureComponent {
         });
     }
 
+    handlePassedTestDelete = id => {
+        const { dispatch } = this.props;
+
+        this.setState(state => ({ cardLoadingIds: [...state.cardLoadingIds, id] }), () => {
+            setTimeout(() => {
+                dispatch(passedTestActions.remove(id))
+                    .then(() => message.success('Passed test has been deleted successfully', 5))
+                    .catch(() => message.error('Something went wrong', 5))
+                    .finally(() => {
+                        this.setState(state => {
+                            const idIndex = state.cardLoadingIds.findIndex(i => i === id);
+                            const cardLoadingIds = [...state.cardLoadingIds];
+
+                            cardLoadingIds.splice(idIndex, 1);
+
+                            return { cardLoadingIds };
+                        });
+                    })
+            }, 3000);
+        });
+    }
+
     renderPassedTests() {
         const { passedTests } = this.props;
         const {
             isLoading,
-            cardLoadingIds,
-            selectedItem
+            cardLoadingIds
         } = this.state;
 
         return (
@@ -52,6 +74,8 @@ class History extends PureComponent {
                         <Item>
                             <Collapse
                                 item={item}
+                                loading={cardLoadingIds.includes(item.id)}
+                                onDelete={this.handlePassedTestDelete}
                             />
                             {/* <Card
                             item={item}

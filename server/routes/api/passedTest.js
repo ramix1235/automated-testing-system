@@ -36,6 +36,22 @@ router.post('/', auth.required, (req, res, next) => {
         .then(() => getAllPassedTests(res, userId));
 });
 
+router.delete('/:id', auth.required, (req, res, next) => {
+    const id = req.params.id;
+    const { payload: { id: userId } } = req;
+
+    if (!id) {
+        return res.status(422).json({
+            errors: {
+                id: 'is required'
+            },
+        });
+    }
+
+    return PassedTest.findOneAndRemove({ _id: id, user: userId })
+        .then(() => getAllPassedTests(res, userId));
+});
+
 router.get('/:id?', auth.required, (req, res, next) => {
     const id = req.params.id;
     const { payload: { id: userId } } = req;

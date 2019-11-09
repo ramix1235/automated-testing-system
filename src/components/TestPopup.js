@@ -189,7 +189,10 @@ class TestPopup extends PureComponent {
                             valuePropName: 'checked',
                             initialValue: isEdit ? closedQuestion.etalon : false
                         })(
-                            <Switch checkedChildren={<span className="f-s-14">Yes</span>} unCheckedChildren={<span className="f-s-14">No</span>} />
+                            <Switch
+                                checkedChildren={<span className="f-s-14">Yes</span>}
+                                unCheckedChildren={<span className="f-s-14">No</span>}
+                            />
                         )}
                     </Item>
                 </div>
@@ -298,16 +301,18 @@ class TestPopup extends PureComponent {
                                     <Input.TextArea />
                                 )}
                             </Item>
-                            <div className="m-b-10">Closed Questions:</div>
-                            {this.renderClosedQuestions()}
-                            <Item className="d-f jc-fs ai-c">
-                                <Button
-                                    type="dashed"
-                                    onClick={this.addClosedQuestion}
-                                >
-                                    Add
+                            <div className="m-t-60">
+                                <div className="m-b-10">Closed Questions:</div>
+                                {this.renderClosedQuestions()}
+                                <Item className="d-f jc-fs ai-c">
+                                    <Button
+                                        type="dashed"
+                                        onClick={this.addClosedQuestion}
+                                    >
+                                        Add
                                 </Button>
-                            </Item>
+                                </Item>
+                            </div>
                         </div>
                         <div className="m-t-60">
                             <div className="m-b-10">Opened Questions:</div>

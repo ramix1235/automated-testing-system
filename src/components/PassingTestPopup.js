@@ -45,10 +45,12 @@ class PassingTestPopup extends PureComponent {
                     description: test.description,
                     closedQuestions: values.closedQuestions ? values.closedQuestions.map((answer, index) => ({
                         question: test.closedQuestions[index].question,
+                        etalon: test.closedQuestions[index].etalon,
                         answer
                     })) : [],
                     openedQuestions: values.openedQuestions ? values.openedQuestions.map((answer, index) => ({
                         question: test.openedQuestions[index].question,
+                        etalon: test.openedQuestions[index].etalon,
                         answer
                     })) : []
                 }
@@ -111,7 +113,10 @@ class PassingTestPopup extends PureComponent {
                                         valuePropName: 'checked',
                                         initialValue: false
                                     })(
-                                        <Switch checkedChildren={<span className="f-s-14">Yes</span>} unCheckedChildren={<span className="f-s-14">No</span>} />
+                                        <Switch
+                                            checkedChildren={<span className="f-s-14">Yes</span>}
+                                            unCheckedChildren={<span className="f-s-14">No</span>}
+                                        />
                                     )}
                                 </Item>
                             ))}

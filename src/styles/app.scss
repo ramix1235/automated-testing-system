@@ -19,18 +19,36 @@
 .ant-collapse {
   .ant-collapse-item {
     background-color: $darkgray !important;
+    border: 0;
 
     .ant-collapse-header {
       background-color: $blackgray;
 
       .anticon {
         color: $gray;
+
+        &:hover {
+          color: $darkgreen;
+
+          &.warning {
+            color: $darkyellow;
+          }
+
+          &.dangerous {
+            color: $darkred;
+          }
+        }
       }
     }
   
     .ant-collapse-content-box {
       background-color: $darkgray;
     }
+  }
+
+  label {
+    font-size: 14px;
+    color: $darkgreen;
   }
 }
 
@@ -57,6 +75,10 @@
 
   .ant-switch-inner {
     color: $darkgray;
+  }
+
+  &.error {
+    background-color: $darkred;
   }
 }
 
