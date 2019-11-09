@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
+import classnames from 'classnames';
 
 import * as passedTestActions from '../store/actions/passedTest';
 
@@ -124,7 +125,7 @@ class PassingTestPopup extends PureComponent {
                     )}
                     {openedQuestions.length > 0 && (
                         <div>
-                            <div className="m-b-10 m-t-60">Opened Questions:</div>
+                            <div className={classnames("m-b-10", { 'm-t-60': closedQuestions.length > 0 })}>Opened Questions:</div>
                             {openedQuestions.map((openedQuestion, index) => (
                                 <Item key={openedQuestion.id} required={false} label={openedQuestion.question}>
                                     {getFieldDecorator(`openedQuestions[${index}]`, {

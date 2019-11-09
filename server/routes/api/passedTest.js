@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const router = require('express').Router();
 const auth = require('../auth');
+const evaluatorService = require('../../evaluatorService');
 
 const PassedTest = mongoose.model('PassedTest');
 
@@ -16,18 +17,27 @@ router.post('/', auth.required, (req, res, next) => {
         });
     }
 
-    // TODO: need evaluate passed test with algorithms
+    const evaluatedClosedQuestions = passedTest.closedQuestions.map(closedQuestion => ({
+        ...closedQuestion,
+        evaluation: closedQuestion.answer === closedQuestion.etalon ? 100 : 0
+    }));
+    const evaluatedOpenedQuestions = passedTest.openedQuestions.map(openedQuestion => ({
+        ...openedQuestion,
+        evaluation: evaluatorService.evaluate(openedQuestion.answer, openedQuestion.etalon)
+    }));
+    const totalEvaluation = [...evaluatedClosedQuestions, ...evaluatedOpenedQuestions].reduce((total, question, index, array) => {
+        if (index === array.length - 1) {
+            return (total + question.evaluation) / array.length;
+        }
+
+        return total + question.evaluation;
+    }, 0)
+
     const evaluatedPassedTest = {
         ...passedTest,
-        totalEvaluation: 50.5,
-        closedQuestions: passedTest.closedQuestions.map(closedQuestion => ({
-            ...closedQuestion,
-            evaluation: 10
-        })),
-        openedQuestions: passedTest.openedQuestions.map(openedQuestion => ({
-            ...openedQuestion,
-            evaluation: 40.5
-        }))
+        totalEvaluation: totalEvaluation,
+        closedQuestions: evaluatedClosedQuestions,
+        openedQuestions: evaluatedOpenedQuestions
     }
 
     const newPassedTest = new PassedTest(evaluatedPassedTest);
