@@ -38,11 +38,7 @@ class TestPopup extends PureComponent {
         }
     }
 
-    showModal = () => {
-        this.setState({
-            visible: true,
-        });
-    };
+    showModal = () => this.setState({ visible: true });
 
     getFieldIndex = (questions, questionId) => {
         const { isEdit } = this.props;
@@ -113,12 +109,6 @@ class TestPopup extends PureComponent {
     handleAfterClose = () => {
         const { form } = this.props;
 
-        this.setState({
-            confirmLoading: false,
-            closedQuestions: [],
-            openedQuestions: []
-        });
-
         form.resetFields();
     }
 
@@ -142,7 +132,7 @@ class TestPopup extends PureComponent {
                 {
                     id: closedQuestions.length ? closedQuestions[closedQuestions.length - 1].id + 1 : 0,
                     question: '',
-                    answer: false
+                    etalon: false
                 }
             ]
         }));
@@ -168,7 +158,7 @@ class TestPopup extends PureComponent {
                 {
                     id: openedQuestions.length ? openedQuestions[openedQuestions.length - 1].id + 1 : 0,
                     question: '',
-                    answer: ''
+                    etalon: ''
                 }
             ]
         }));
@@ -195,9 +185,9 @@ class TestPopup extends PureComponent {
                         )}
                     </Item>
                     <Item className="m-l-10 flx-1" required={false} label={index === 0 ? 'Correct answer' : ''}>
-                        {getFieldDecorator(`closedQuestions[${this.getFieldIndex(closedQuestions, closedQuestion.id)}].answer`, {
+                        {getFieldDecorator(`closedQuestions[${this.getFieldIndex(closedQuestions, closedQuestion.id)}].etalon`, {
                             valuePropName: 'checked',
-                            initialValue: isEdit ? closedQuestion.answer : false
+                            initialValue: isEdit ? closedQuestion.etalon : false
                         })(
                             <Switch checkedChildren={<span className="f-s-14">Yes</span>} unCheckedChildren={<span className="f-s-14">No</span>} />
                         )}
@@ -235,14 +225,14 @@ class TestPopup extends PureComponent {
                         )}
                     </Item>
                     <Item className="m-l-10 flx-1" required={false} label={index === 0 ? 'Correct answer' : ''}>
-                        {getFieldDecorator(`openedQuestions[${this.getFieldIndex(openedQuestions, openedQuestion.id)}].answer`, {
+                        {getFieldDecorator(`openedQuestions[${this.getFieldIndex(openedQuestions, openedQuestion.id)}].etalon`, {
                             rules: [
                                 {
                                     required: true,
                                     message: ERRORS.required.answer,
                                 }
                             ],
-                            initialValue: isEdit ? openedQuestion.answer : ''
+                            initialValue: isEdit ? openedQuestion.etalon : ''
                         })(
                             <Input.TextArea />
                         )}
@@ -271,7 +261,8 @@ class TestPopup extends PureComponent {
                 <Modal
                     title={isEdit ? "Edit test" : "New test"}
                     centered
-                    visible={visible || !!selectedItem}
+                    maskClosable={false}
+                    visible={visible || (isEdit && !!selectedItem)}
                     okText={isEdit ? "Update" : "Create"}
                     width={'50%'}
                     onOk={this.handleOk}

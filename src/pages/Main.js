@@ -15,7 +15,7 @@ const MENU = [
     },
     {
         id: '2',
-        name: 'Results'
+        name: 'History'
     }
 ]
 const defaultSelectedMenu = '1';

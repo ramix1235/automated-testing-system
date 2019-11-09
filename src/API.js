@@ -52,3 +52,16 @@ export function removeTest(id) {
 export function getAllTests() {
     return Axios.get('test');
 }
+
+// PASSED TEST
+export function createPassedTest(passedTest) {
+    return Axios.post('passedTest', { passedTest });
+}
+
+export function getPassedTest(id) {
+    return Axios.get(`passedTest/${id}`);
+}
+
+export function getAllPassedTests() {
+    return Axios.get('passedTest');
+}

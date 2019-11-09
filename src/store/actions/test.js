@@ -30,7 +30,7 @@ export function remove(id) {
         }));
 };
 
-export function getTest(id) {
+export function get(id) {
     return dispatch => API.getTest(id)
         .then(response => dispatch({
             type: GET_TEST,
@@ -38,7 +38,7 @@ export function getTest(id) {
         }));
 };
 
-export function getAllTests() {
+export function getAll() {
     return dispatch => API.getAllTests()
         .then(response => dispatch({
             type: GET_ALL_TESTS,

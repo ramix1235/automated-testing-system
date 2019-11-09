@@ -5,8 +5,7 @@ const session = require('express-session');
 const cors = require('cors');
 const mongoose = require('mongoose');
 
-require('./models/User');
-require('./models/Test');
+require('./models');
 
 require('./config/passport');
 

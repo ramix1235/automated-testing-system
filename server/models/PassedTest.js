@@ -4,20 +4,22 @@ const { Schema } = mongoose;
 
 const closedQuestionSchema = new Schema({
     question: String,
-    etalon: Boolean
+    answer: Boolean,
+    evaluation: Number
 });
 
 const openedQuestionSchema = new Schema({
     question: String,
-    etalon: String
+    answer: String,
+    evaluation: Number
 });
 
-const TestSchema = new Schema({
+const PassedTestSchema = new Schema({
     title: String,
-    description: String,
     closedQuestions: [closedQuestionSchema],
     openedQuestions: [openedQuestionSchema],
-    author: Schema.Types.ObjectId
+    totalEvaluation: Number,
+    user: Schema.Types.ObjectId
 }, {
     timestamps: {
         createdAt: 'createdAt',
@@ -25,4 +27,4 @@ const TestSchema = new Schema({
     },
 });
 
-mongoose.model('Test', TestSchema);
+mongoose.model('PassedTest', PassedTestSchema);
