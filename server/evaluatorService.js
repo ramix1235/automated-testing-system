@@ -1,6 +1,11 @@
+const crc = require('crc');
+
 class EvaluatorService {
     evaluate(answer, etalon) {
-        return this.proximityOfWordsWithWeights(answer, etalon);
+        return {
+            shingles: this.shingles(answer, etalon),
+            proximityOfWordsWithWeights: this.proximityOfWordsWithWeights(answer, etalon)
+        };
     }
 
     extractWords(str) {
@@ -10,6 +15,70 @@ class EvaluatorService {
         words = words.map(str => str.toLowerCase());
 
         return words;
+    }
+
+    shingles(answer, etalon) {
+        const shingleLength = 3;
+
+        const etalonWorlds = this.extractWords(etalon);
+        const answerWorlds = this.extractWords(answer);
+
+        const etalonShingles = makeShingles(etalonWorlds, shingleLength);
+        const answerShingles = makeShingles(answerWorlds, shingleLength);
+
+        const etalonHashed = hashingShingles(etalonShingles);
+        const answerHashed = hashingShingles(answerShingles);
+
+        const ro = compareShingles(etalonHashed[0], answerHashed[0]);
+
+        console.log(ro * 100);
+
+        return ro * 100;
+
+        function makeShingles(words, shingleLength) {
+            const shingles = [];
+            let wordsCopy = [...words];
+
+            if (words.length < shingleLength) {
+                shingles.push(wordsCopy.join(' '));
+            } else {
+                while (shingles.length !== (words.length - shingleLength + 1)) {
+                    shingles.push(wordsCopy.slice(0, shingleLength).join(' '));
+                    wordsCopy = wordsCopy.slice(1);
+                }
+            }
+
+            return shingles;
+        }
+
+        function hashingShingles(shingles) {
+            const hashes = [];
+
+            for (let i = 0, n = 1; i < n; i++) {
+                const hashedArr = [];
+
+                for (let j = 0, k = shingles.length; j < k; j++) {
+                    hashedArr.push(crc.crc32(shingles[j]));
+                }
+
+                hashes.push(hashedArr);
+            }
+
+            return hashes;
+        }
+
+        function compareShingles(arr1, arr2) {
+            let count = 0;
+
+            arr1.forEach(hash => {
+                if (arr2.includes(hash)) {
+                    count++;
+                }
+            });
+
+            return (count / (arr1.length + arr2.length - count)); // коэфф Жаккара
+            // return count * 2 / (arr1[0].length + arr2[0].length);
+        };
     }
 
     proximityOfWordsWithWeights(answer, etalon) {

@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
-import { proximityOfWordsWithWeights } from '../helper';
+import { proximityOfWordsWithWeights, shingles } from '../helper';
 
 import * as passedTestActions from '../store/actions/passedTest';
 
@@ -58,6 +58,7 @@ class PassingTestPopup extends PureComponent {
                 }
 
                 // passedTest.openedQuestions.forEach(({ answer, etalon }) => {
+                //     shingles(answer, etalon)
                 //     proximityOfWordsWithWeights(answer, etalon);
                 // })
 

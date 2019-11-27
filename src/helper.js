@@ -1,3 +1,5 @@
+import crc from 'crc';
+
 function extractWords(str) {
     let words;
     words = str.match(/[\u0400-\u052F\u2DE0-\u2DFF\uA640-\uA69Fa-zA-Z0-9+-]+('[\u0400-\u052F\u2DE0-\u2DFF\uA640-\uA69Fa-zA-Z0-9+-]+)?/g) || [];
@@ -7,10 +9,74 @@ function extractWords(str) {
     return words;
 }
 
+export function shingles(answer, etalon) {
+    const shingleLength = 3;
+
+    const etalonWorlds = extractWords(etalon);
+    const answerWorlds = extractWords(answer);
+
+    const etalonShingles = makeShingles(etalonWorlds, shingleLength);
+    const answerShingles = makeShingles(answerWorlds, shingleLength);
+
+    const etalonHashed = hashingShingles(etalonShingles);
+    const answerHashed = hashingShingles(answerShingles);
+
+    const ro = compareShingles(etalonHashed[0], answerHashed[0]);
+
+    console.log(ro * 100);
+
+    return ro * 100;
+
+    function makeShingles(words, shingleLength) {
+        const shingles = [];
+        let wordsCopy = [...words];
+
+        if (words.length < shingleLength) {
+            shingles.push(wordsCopy.join(' '));
+        } else {
+            while (shingles.length !== (words.length - shingleLength + 1)) {
+                shingles.push(wordsCopy.slice(0, shingleLength).join(' '));
+                wordsCopy = wordsCopy.slice(1);
+            }
+        }
+
+        return shingles;
+    }
+
+    function hashingShingles(shingles) {
+        const hashes = [];
+
+        for (let i = 0, n = 1; i < n; i++) {
+            const hashedArr = [];
+
+            for (let j = 0, k = shingles.length; j < k; j++) {
+                hashedArr.push(crc.crc32(shingles[j]));
+            }
+
+            hashes.push(hashedArr);
+        }
+
+        return hashes;
+    }
+
+    function compareShingles(arr1, arr2) {
+        let count = 0;
+
+        arr1.forEach(hash => {
+            if (arr2.includes(hash)) {
+                count++;
+            }
+        });
+
+        return (count / (arr1.length + arr2.length - count)); // коэфф Жаккара
+        // return count * 2 / (arr1[0].length + arr2[0].length);
+    };
+}
+
 export function proximityOfWordsWithWeights(answer, etalon) {
     // p1
-    const etalonWorlds = extractWords('Кожен мисливець бажає знати, де сидить фазан.');
-    const answerWorlds = extractWords('мисливець, знати бажає, де сидить – фазан кожен!!!');
+    const etalonWorlds = extractWords(etalon);
+    const answerWorlds = extractWords(answer);
 
     // p2
     const Dmax = 3;
@@ -102,7 +168,7 @@ export function proximityOfWordsWithWeights(answer, etalon) {
         ro = R / etalonWorlds.length;
     }
 
-    console.log(ro);
+    console.log(ro * 100);
 
     return ro * 100;
 }
