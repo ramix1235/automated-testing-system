@@ -127,7 +127,7 @@ export default class Collapse extends PureComponent {
                             </div>
                             <div className="flx-1 p-v-5 p-h-20">
                                 <div name={`openedQuestions-evaluation-${index}`}>
-                                    {openedQuestion.evaluation}
+                                    {Number.parseInt(openedQuestion.evaluation)}
                                 </div>
                             </div>
                         </div>
@@ -160,7 +160,7 @@ export default class Collapse extends PureComponent {
                     extra={
                         <div className="d-f jc-fe ai-c">
                             <div className="m-r-20">
-                                {`${totalEvaluation}/100`}
+                                {`${Number.parseInt(totalEvaluation)}/100`}
                             </div>
                             <div className="m-r-20">
                                 {moment(updatedAt).format('DD/MM/YY HH:mm')}

@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
+import { proximityOfWordsWithWeights } from '../helper';
 
 import * as passedTestActions from '../store/actions/passedTest';
 
@@ -55,6 +56,10 @@ class PassingTestPopup extends PureComponent {
                         answer
                     })) : []
                 }
+
+                // passedTest.openedQuestions.forEach(({ answer, etalon }) => {
+                //     proximityOfWordsWithWeights(answer, etalon);
+                // })
 
                 dispatch(passedTestActions.create(passedTest))
                     .then(() => {
