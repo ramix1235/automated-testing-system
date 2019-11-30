@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const router = require('express').Router();
 const auth = require('../auth');
 const evaluatorService = require('../../evaluatorService');
+const EVALUATOR_TYPE = require('../../constants/evaluators');
 
 const PassedTest = mongoose.model('PassedTest');
 
@@ -23,7 +24,7 @@ router.post('/', auth.required, (req, res, next) => {
     }));
     const evaluatedOpenedQuestions = passedTest.openedQuestions.map(openedQuestion => ({
         ...openedQuestion,
-        evaluation: evaluatorService.evaluate(openedQuestion.answer, openedQuestion.etalon).proximityOfWordsWithWeights // TODO: can be change
+        evaluation: evaluatorService.evaluate(openedQuestion.answer, openedQuestion.etalon, openedQuestion.evaluatorType)
     }));
     const totalEvaluation = [...evaluatedClosedQuestions, ...evaluatedOpenedQuestions].reduce((total, question, index, array) => {
         if (index === array.length - 1) {

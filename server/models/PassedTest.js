@@ -2,25 +2,27 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 
-const closedQuestionSchema = new Schema({
+const ClosedQuestionSchema = new Schema({
     question: String,
     answer: Boolean,
     etalon: Boolean,
     evaluation: Number
 });
 
-const openedQuestionSchema = new Schema({
+
+const OpenedQuestionSchema = new Schema({
     question: String,
     answer: String,
     etalon: String,
+    evaluatorType: String,
     evaluation: Number
 });
 
 const PassedTestSchema = new Schema({
     title: String,
     description: String,
-    closedQuestions: [closedQuestionSchema],
-    openedQuestions: [openedQuestionSchema],
+    closedQuestions: [ClosedQuestionSchema],
+    openedQuestions: [OpenedQuestionSchema],
     totalEvaluation: Number,
     user: Schema.Types.ObjectId
 }, {

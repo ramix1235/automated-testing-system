@@ -1,11 +1,14 @@
 const crc = require('crc');
+const EVALUATOR_TYPE = require('./constants/evaluators');
 
 class EvaluatorService {
-    evaluate(answer, etalon) {
-        return {
-            shingles: this.shingles(answer, etalon),
-            proximityOfWordsWithWeights: this.proximityOfWordsWithWeights(answer, etalon)
-        };
+    evaluate(answer, etalon, evaluatorType) {
+        switch (evaluatorType) {
+            case EVALUATOR_TYPE.shingles: return this.shingles(answer, etalon);
+            case EVALUATOR_TYPE.proximityOfWords: return this.proximityOfWords(answer, etalon);
+
+            default: return this.shingles(answer, etalon);
+        }
     }
 
     extractWords(str) {
@@ -81,7 +84,7 @@ class EvaluatorService {
         };
     }
 
-    proximityOfWordsWithWeights(answer, etalon) {
+    proximityOfWords(answer, etalon) {
         // p1
         const etalonWorlds = this.extractWords(etalon);
         const answerWorlds = this.extractWords(answer);

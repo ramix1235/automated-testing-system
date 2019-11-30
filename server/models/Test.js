@@ -2,21 +2,22 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 
-const closedQuestionSchema = new Schema({
+const ClosedQuestionSchema = new Schema({
     question: String,
     etalon: Boolean
 });
 
-const openedQuestionSchema = new Schema({
+const OpenedQuestionSchema = new Schema({
     question: String,
+    evaluatorType: String,
     etalon: String
 });
 
 const TestSchema = new Schema({
     title: String,
     description: String,
-    closedQuestions: [closedQuestionSchema],
-    openedQuestions: [openedQuestionSchema],
+    closedQuestions: [ClosedQuestionSchema],
+    openedQuestions: [OpenedQuestionSchema],
     author: Schema.Types.ObjectId
 }, {
     timestamps: {

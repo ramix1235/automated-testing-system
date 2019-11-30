@@ -73,7 +73,7 @@ export function shingles(answer, etalon) {
     };
 }
 
-export function proximityOfWordsWithWeights(answer, etalon) {
+export function proximityOfWords(answer, etalon) {
     // p1
     const etalonWorlds = extractWords(etalon);
     const answerWorlds = extractWords(answer);

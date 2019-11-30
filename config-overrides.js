@@ -31,7 +31,9 @@ module.exports = override(
       '@menu-highlight-color': '#1DA57A',
 
       '@card-head-color': '#1DA57A',
-      '@card-actions-background': '#16171b'
+      '@card-actions-background': '#16171b',
+
+      'select-item-selected-bg': '#16171b'
     },
   }),
 );

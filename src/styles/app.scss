@@ -160,3 +160,11 @@
     font-size: 13px;
   }
 }
+
+.ant-select-dropdown {
+  .ant-select-dropdown-menu-item {
+    &:hover:not(.ant-select-dropdown-menu-item-disabled) {
+      background-color: $blackgray;
+    }
+  }
+}

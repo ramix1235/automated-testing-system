@@ -10,12 +10,15 @@ import {
     Input,
     Icon,
     Switch,
-    message
+    message,
+    Select
 } from 'antd';
 
 import ERRORS from '../constants/errors';
+import EVALUATOR_TYPE from '../constants/evaluators'
 
 const { Item } = Form;
+const { Option } = Select;
 
 class TestPopup extends PureComponent {
     state = {
@@ -158,7 +161,8 @@ class TestPopup extends PureComponent {
                 {
                     id: openedQuestions.length ? openedQuestions[openedQuestions.length - 1].id + 1 : 0,
                     question: '',
-                    etalon: ''
+                    etalon: '',
+                    type: EVALUATOR_TYPE.shingles
                 }
             ]
         }));
@@ -212,42 +216,56 @@ class TestPopup extends PureComponent {
         const { openedQuestions } = this.state;
 
         return openedQuestions.map((openedQuestion, index) => (
-            <div key={openedQuestion.id} className="d-f jc-fs ai-fs">
-                <div className="d-f flx-6">
-                    <Item className="m-r-10 flx-1" required={false} label={index === 0 ? 'Question' : ''}>
-                        {getFieldDecorator(`openedQuestions[${this.getFieldIndex(openedQuestions, openedQuestion.id)}].question`, {
-                            rules: [
-                                {
-                                    required: true,
-                                    message: ERRORS.required.question,
-                                }
-                            ],
-                            initialValue: isEdit ? openedQuestion.question : ''
+            <div key={openedQuestion.id} className="d-f f-d-column jc-fs ai-fs">
+                <div className="d-f jc-fs ai-fs w-25">
+                    <Item className="flx-1" required={false} label='Evaluator Type'>
+                        {getFieldDecorator(`openedQuestions[${this.getFieldIndex(openedQuestions, openedQuestion.id)}].evaluatorType`, {
+                            initialValue: isEdit ? openedQuestion.evaluatorType : EVALUATOR_TYPE.shingles
                         })(
-                            <Input.TextArea />
-                        )}
-                    </Item>
-                    <Item className="m-l-10 flx-1" required={false} label={index === 0 ? 'Correct answer' : ''}>
-                        {getFieldDecorator(`openedQuestions[${this.getFieldIndex(openedQuestions, openedQuestion.id)}].etalon`, {
-                            rules: [
-                                {
-                                    required: true,
-                                    message: ERRORS.required.answer,
-                                }
-                            ],
-                            initialValue: isEdit ? openedQuestion.etalon : ''
-                        })(
-                            <Input.TextArea />
+                            <Select>
+                                <Option value={EVALUATOR_TYPE.shingles}>Shingles</Option>
+                                <Option value={EVALUATOR_TYPE.proximityOfWords}>Proximity Of Words</Option>
+                            </Select>
                         )}
                     </Item>
                 </div>
-                <Item className="m-l-20 f-s-20 flx-1" required={false} style={{ marginTop: index === 0 ? 40 : 0 }}>
-                    <Icon
-                        className="dynamic-delete-button"
-                        type="minus-circle-o"
-                        onClick={() => this.removeOpenedQuestion(openedQuestion)}
-                    />
-                </Item>
+                <div className="d-f jc-fs ai-fs w-100">
+                    <div className="d-f flx-6">
+                        <Item className="m-r-10 flx-1" required={false} label={index === 0 ? 'Question' : ''}>
+                            {getFieldDecorator(`openedQuestions[${this.getFieldIndex(openedQuestions, openedQuestion.id)}].question`, {
+                                rules: [
+                                    {
+                                        required: true,
+                                        message: ERRORS.required.question,
+                                    }
+                                ],
+                                initialValue: isEdit ? openedQuestion.question : ''
+                            })(
+                                <Input.TextArea />
+                            )}
+                        </Item>
+                        <Item className="m-l-10 flx-1" required={false} label={index === 0 ? 'Correct answer' : ''}>
+                            {getFieldDecorator(`openedQuestions[${this.getFieldIndex(openedQuestions, openedQuestion.id)}].etalon`, {
+                                rules: [
+                                    {
+                                        required: true,
+                                        message: ERRORS.required.answer,
+                                    }
+                                ],
+                                initialValue: isEdit ? openedQuestion.etalon : ''
+                            })(
+                                <Input.TextArea />
+                            )}
+                        </Item>
+                    </div>
+                    <Item className="m-l-20 f-s-20 flx-1" required={false} style={{ marginTop: index === 0 ? 40 : 0 }}>
+                        <Icon
+                            className="dynamic-delete-button"
+                            type="minus-circle-o"
+                            onClick={() => this.removeOpenedQuestion(openedQuestion)}
+                        />
+                    </Item>
+                </div>
             </div>
         ));
     }

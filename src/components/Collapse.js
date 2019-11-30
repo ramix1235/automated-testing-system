@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import moment from 'moment'
 import classnames from 'classnames';
+import EVALUATOR_TYPE from '../constants/evaluators'
 
 import {
     Collapse as CollapseItem,
@@ -12,6 +13,12 @@ import {
 const { Panel } = CollapseItem;
 
 export default class Collapse extends PureComponent {
+    getEvaluatorType = openedQuestion => {
+        const [key, value] = Object.entries(EVALUATOR_TYPE).find(([key, value]) => value === openedQuestion.evaluatorType);
+
+        return <span>{value}</span>;
+    }
+
     handleDelete = e => {
         const { item, onDelete, loading } = this.props;
 
@@ -109,6 +116,9 @@ export default class Collapse extends PureComponent {
                         <div className="flx-1 p-v-5 p-h-20">
                             <label>Evaluation:</label>
                         </div>
+                        <div className="flx-1 p-v-5 p-h-20">
+                            <label>Evaluator Type:</label>
+                        </div>
                     </div>
                     {openedQuestions.map((openedQuestion, index) => (
                         <div key={`openedQuestions-${index}`} className="d-f">
@@ -128,6 +138,11 @@ export default class Collapse extends PureComponent {
                             <div className="flx-1 p-v-5 p-h-20">
                                 <div name={`openedQuestions-evaluation-${index}`}>
                                     {Number.parseInt(openedQuestion.evaluation)}
+                                </div>
+                            </div>
+                            <div className="flx-1 p-v-5 p-h-20">
+                                <div name={`openedQuestions-evaluatorType-${index}`}>
+                                    {this.getEvaluatorType(openedQuestion)}
                                 </div>
                             </div>
                         </div>

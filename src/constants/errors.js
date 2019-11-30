@@ -7,4 +7,4 @@ export default {
         title: "title is required.",
         description: "description is required."
     }
-}
+};

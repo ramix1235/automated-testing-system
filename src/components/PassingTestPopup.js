@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
-import { proximityOfWordsWithWeights, shingles } from '../helper';
+import { proximityOfWords, shingles } from '../helper';
 
 import * as passedTestActions from '../store/actions/passedTest';
 
@@ -53,13 +53,14 @@ class PassingTestPopup extends PureComponent {
                     openedQuestions: values.openedQuestions ? values.openedQuestions.map((answer, index) => ({
                         question: test.openedQuestions[index].question,
                         etalon: test.openedQuestions[index].etalon,
+                        evaluatorType: test.openedQuestions[index].evaluatorType,
                         answer
                     })) : []
                 }
 
                 // passedTest.openedQuestions.forEach(({ answer, etalon }) => {
                 //     shingles(answer, etalon)
-                //     proximityOfWordsWithWeights(answer, etalon);
+                //     proximityOfWords(answer, etalon);
                 // })
 
                 dispatch(passedTestActions.create(passedTest))
