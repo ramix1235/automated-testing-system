@@ -194,7 +194,7 @@ class EvaluatorService {
         etalonNodes
             .split("|")
             .map(node => JSON.parse(node.trim()))
-            .forEach(node => etalonGraph.addNode(node.id, node.id));
+            .forEach(node => etalonGraph.addNode(node.name, node.id));
         etalonLinks
             .split("|")
             .map(node => JSON.parse(node.trim()))

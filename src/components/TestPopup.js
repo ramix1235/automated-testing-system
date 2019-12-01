@@ -184,8 +184,8 @@ class TestPopup extends PureComponent {
                 ...state.graphsData,
                 {
                     id: openedQuestions.length ? openedQuestions[openedQuestions.length - 1].id + 1 : 0,
-                    nodes: [{ id: "Harry" }, { id: "Sally" }, { id: "Alice" }],
-                    links: [{ source: "Harry", target: "Sally" }, { source: "Harry", target: "Alice" }]
+                    nodes: [{ id: "H1", name: "Harry" }, { id: "S1", name: "Sally" }, { id: "A1", name: "Alice" }],
+                    links: [{ source: "H1", target: "S1" }, { source: "H1", target: "A1" }]
                 }
             ],
             openedQuestions: [
@@ -304,14 +304,14 @@ class TestPopup extends PureComponent {
                                                         message: ERRORS.required.answer,
                                                     }
                                                 ],
-                                                initialValue: isEdit ? openedQuestion.etalonNodes : '{ "id": "Harry" }|{ "id": "Sally" }|{ "id": "Alice" }'
+                                                initialValue: isEdit ? openedQuestion.etalonNodes : '{ "id": "H1", name: "Harry" }, { "id": "S1", name: "Sally" }, { "id": "A1", name: "Alice" }'
                                             })(
                                                 <Input.TextArea />
                                             )}
                                         </Item>
                                         <Item required={false} label={index === 0 ? 'Correct links' : ''}>
                                             {getFieldDecorator(`openedQuestions[${this.getFieldIndex(openedQuestions, openedQuestion.id)}].etalonLinks`, {
-                                                initialValue: isEdit ? openedQuestion.etalonLinks : '{ "source": "Harry", "target": "Sally" }|{ "source": "Harry", "target": "Alice" }'
+                                                initialValue: isEdit ? openedQuestion.etalonLinks : '{ "source": "H1", "target": "S1" }, { "source": "H1", "target": "A1" }'
                                             })(
                                                 <Input.TextArea />
                                             )}

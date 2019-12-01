@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { Graph as ReactGraph } from "react-d3-graph";
 
 const graphConfig = {
-    nodeHighlightBehavior: true,
+    directed: true,
     node: {
         color: "#1DA57A",
         fontColor: "#828282",
