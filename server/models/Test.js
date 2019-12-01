@@ -10,7 +10,9 @@ const ClosedQuestionSchema = new Schema({
 const OpenedQuestionSchema = new Schema({
     question: String,
     evaluatorType: String,
-    etalon: String
+    etalon: String,
+    etalonNodes: String,
+    etalonLinks: String
 });
 
 const TestSchema = new Schema({

@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
-import { proximityOfWords, shingles } from '../helper';
+import { proximityOfWords, shingles, graph } from '../helper';
 
 import * as passedTestActions from '../store/actions/passedTest';
 
@@ -14,6 +14,7 @@ import {
 } from 'antd';
 
 import ERRORS from '../constants/errors';
+import EVALUATOR_TYPE from '../constants/evaluators';
 
 const { Item } = Form;
 
@@ -53,14 +54,20 @@ class PassingTestPopup extends PureComponent {
                     openedQuestions: values.openedQuestions ? values.openedQuestions.map((answer, index) => ({
                         question: test.openedQuestions[index].question,
                         etalon: test.openedQuestions[index].etalon,
+                        etalonNodes: test.openedQuestions[index].etalonNodes,
+                        etalonLinks: test.openedQuestions[index].etalonLinks,
                         evaluatorType: test.openedQuestions[index].evaluatorType,
                         answer
                     })) : []
                 }
 
-                // passedTest.openedQuestions.forEach(({ answer, etalon }) => {
-                //     shingles(answer, etalon)
-                //     proximityOfWords(answer, etalon);
+                // passedTest.openedQuestions.forEach(({ answer, etalon, etalonNodes, etalonLinks, evaluatorType }) => {
+                //     if (evaluatorType === EVALUATOR_TYPE.graph) {
+                //         graph(answer, etalonNodes, etalonLinks)
+                //     } else {
+                //         shingles(answer, etalon)
+                //         proximityOfWords(answer, etalon);
+                //     }
                 // })
 
                 dispatch(passedTestActions.create(passedTest))

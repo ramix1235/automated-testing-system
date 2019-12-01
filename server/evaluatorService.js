@@ -1,11 +1,13 @@
 const crc = require('crc');
+const Graph = require('graph-js');
 const EVALUATOR_TYPE = require('./constants/evaluators');
 
 class EvaluatorService {
-    evaluate(answer, etalon, evaluatorType) {
+    evaluate(answer, etalon, etalonNodes, etalonLinks, evaluatorType) {
         switch (evaluatorType) {
             case EVALUATOR_TYPE.shingles: return this.shingles(answer, etalon);
             case EVALUATOR_TYPE.proximityOfWords: return this.proximityOfWords(answer, etalon);
+            case EVALUATOR_TYPE.graph: return this.graph(answer, etalonNodes, etalonLinks);
 
             default: return this.shingles(answer, etalon);
         }
@@ -178,6 +180,46 @@ class EvaluatorService {
         function p13() {
             ro = R / etalonWorlds.length;
         }
+
+        console.log(ro);
+
+        return ro * 100;
+    }
+
+    graph(answer, etalonNodes, etalonLinks) {
+        const answerWorlds = this.extractWords(answer);
+        const etalonGraph = new Graph();
+        let result = 0;
+
+        etalonNodes
+            .split("|")
+            .map(node => JSON.parse(node.trim()))
+            .forEach(node => etalonGraph.addNode(node.id, node.id));
+        etalonLinks
+            .split("|")
+            .map(node => JSON.parse(node.trim()))
+            .forEach((link, index) => etalonGraph.addEdge(link.source, link.target, index))
+
+        const nodes = etalonGraph.getNodes();
+
+        for (const n in nodes) {
+            // nodes[n].getId();
+
+            const etalonWord = nodes[n].getContent();
+
+            if (answerWorlds.includes(etalonWord.toLowerCase())) {
+                result++;
+            }
+
+        }
+
+        // const edges = etalonGraph.getEdges();
+
+        // for (const e in edges) {
+        //     console.log(edges[e].getNodeStart().getId() + " --- " + edges[e].getId() + " = " + edges[e].getWeight() + " ---> " + edges[e].getNodeEnd().getId());
+        // }
+
+        const ro = result / nodes.length;
 
         console.log(ro);
 

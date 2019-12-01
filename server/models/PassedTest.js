@@ -15,6 +15,8 @@ const OpenedQuestionSchema = new Schema({
     answer: String,
     etalon: String,
     evaluatorType: String,
+    etalonNodes: String,
+    etalonLinks: String,
     evaluation: Number
 });
 

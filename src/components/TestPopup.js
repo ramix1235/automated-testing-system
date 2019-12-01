@@ -13,6 +13,7 @@ import {
     message,
     Select
 } from 'antd';
+import Graph from './Graph';
 
 import ERRORS from '../constants/errors';
 import EVALUATOR_TYPE from '../constants/evaluators'
@@ -25,7 +26,8 @@ class TestPopup extends PureComponent {
         visible: false,
         confirmLoading: false,
         closedQuestions: [],
-        openedQuestions: []
+        openedQuestions: [],
+        graphsData: []
     };
 
     componentDidUpdate(prevProps) {
@@ -36,7 +38,12 @@ class TestPopup extends PureComponent {
 
             this.setState({
                 closedQuestions: this.props.selectedItem.closedQuestions,
-                openedQuestions: this.props.selectedItem.openedQuestions
+                openedQuestions: this.props.selectedItem.openedQuestions,
+                graphsData: this.props.selectedItem.openedQuestions.map(question => ({
+                    id: question.id,
+                    nodes: question.etalonNodes,
+                    links: question.etalonLinks
+                }))
             });
         }
     }
@@ -83,7 +90,8 @@ class TestPopup extends PureComponent {
                         if (!isEdit) {
                             this.setState({
                                 closedQuestions: [],
-                                openedQuestions: []
+                                openedQuestions: [],
+                                graphsData: []
                             });
 
                             form.resetFields();
@@ -115,6 +123,16 @@ class TestPopup extends PureComponent {
         form.resetFields();
     }
 
+    handleUpdateGraph = data => {
+        const { graphsData } = this.state;
+        const copyGraphsData = [...graphsData];
+        const dataIndex = copyGraphsData.findIndex(graph => graph.id === data.id);
+
+        copyGraphsData[dataIndex] = data;
+
+        this.setState({ graphsData: copyGraphsData });
+    }
+
     removeClosedQuestion = closedQuestion => {
         const { closedQuestions } = this.state;
 
@@ -142,26 +160,42 @@ class TestPopup extends PureComponent {
     };
 
     removeOpenedQuestion = openedQuestion => {
-        const { openedQuestions } = this.state;
+        const { openedQuestions, graphsData } = this.state;
 
         const questionIndex = openedQuestions.findIndex(cq => cq.id === openedQuestion.id);
         const updatedOpenedQuestions = [...openedQuestions];
-
         updatedOpenedQuestions.splice(questionIndex, 1);
 
-        this.setState({ openedQuestions: updatedOpenedQuestions });
+        const graphIndex = graphsData.findIndex(graph => graph.id === openedQuestion.id);
+        const updatedGraphsData = [...graphsData];
+        updatedGraphsData.splice(graphIndex, 1);
+
+        this.setState({
+            openedQuestions: updatedOpenedQuestions,
+            graphsData: updatedGraphsData
+        });
     };
 
     addOpenedQuestion = () => {
         const { openedQuestions } = this.state;
 
         this.setState(state => ({
+            graphsData: [
+                ...state.graphsData,
+                {
+                    id: openedQuestions.length ? openedQuestions[openedQuestions.length - 1].id + 1 : 0,
+                    nodes: [{ id: "Harry" }, { id: "Sally" }, { id: "Alice" }],
+                    links: [{ source: "Harry", target: "Sally" }, { source: "Harry", target: "Alice" }]
+                }
+            ],
             openedQuestions: [
                 ...state.openedQuestions,
                 {
                     id: openedQuestions.length ? openedQuestions[openedQuestions.length - 1].id + 1 : 0,
                     question: '',
                     etalon: '',
+                    etalonNodes: [],
+                    etalonLinks: [],
                     type: EVALUATOR_TYPE.shingles
                 }
             ]
@@ -212,8 +246,8 @@ class TestPopup extends PureComponent {
     }
 
     renderOpenedQuestions() {
-        const { form: { getFieldDecorator }, isEdit } = this.props;
-        const { openedQuestions } = this.state;
+        const { form: { getFieldDecorator, getFieldValue }, isEdit } = this.props;
+        const { openedQuestions, graphsData } = this.state;
 
         return openedQuestions.map((openedQuestion, index) => (
             <div key={openedQuestion.id} className="d-f f-d-column jc-fs ai-fs">
@@ -225,46 +259,89 @@ class TestPopup extends PureComponent {
                             <Select>
                                 <Option value={EVALUATOR_TYPE.shingles}>Shingles</Option>
                                 <Option value={EVALUATOR_TYPE.proximityOfWords}>Proximity Of Words</Option>
+                                <Option value={EVALUATOR_TYPE.graph}>Graph</Option>
                             </Select>
                         )}
                     </Item>
                 </div>
-                <div className="d-f jc-fs ai-fs w-100">
-                    <div className="d-f flx-6">
-                        <Item className="m-r-10 flx-1" required={false} label={index === 0 ? 'Question' : ''}>
-                            {getFieldDecorator(`openedQuestions[${this.getFieldIndex(openedQuestions, openedQuestion.id)}].question`, {
-                                rules: [
-                                    {
-                                        required: true,
-                                        message: ERRORS.required.question,
-                                    }
-                                ],
-                                initialValue: isEdit ? openedQuestion.question : ''
-                            })(
-                                <Input.TextArea />
-                            )}
-                        </Item>
-                        <Item className="m-l-10 flx-1" required={false} label={index === 0 ? 'Correct answer' : ''}>
-                            {getFieldDecorator(`openedQuestions[${this.getFieldIndex(openedQuestions, openedQuestion.id)}].etalon`, {
-                                rules: [
-                                    {
-                                        required: true,
-                                        message: ERRORS.required.answer,
-                                    }
-                                ],
-                                initialValue: isEdit ? openedQuestion.etalon : ''
-                            })(
-                                <Input.TextArea />
-                            )}
+                <div className="d-f f-d-column jc-fs ai-fs w-100">
+                    <div className="d-f jc-fs ai-fs w-100">
+                        <div className="d-f flx-6">
+                            <Item className="m-r-10 flx-1" required={false} label={index === 0 ? 'Question' : ''}>
+                                {getFieldDecorator(`openedQuestions[${this.getFieldIndex(openedQuestions, openedQuestion.id)}].question`, {
+                                    rules: [
+                                        {
+                                            required: true,
+                                            message: ERRORS.required.question,
+                                        }
+                                    ],
+                                    initialValue: isEdit ? openedQuestion.question : ''
+                                })(
+                                    <Input.TextArea />
+                                )}
+                            </Item>
+                            {getFieldValue('openedQuestions')[this.getFieldIndex(openedQuestions, openedQuestion.id)].evaluatorType !== EVALUATOR_TYPE.graph ? (
+                                <Item className="m-l-10 flx-1" required={false} label={index === 0 ? 'Correct answer' : ''}>
+                                    {getFieldDecorator(`openedQuestions[${this.getFieldIndex(openedQuestions, openedQuestion.id)}].etalon`, {
+                                        rules: [
+                                            {
+                                                required: true,
+                                                message: ERRORS.required.answer,
+                                            }
+                                        ],
+                                        initialValue: isEdit ? openedQuestion.etalon : ''
+                                    })(
+                                        <Input.TextArea />
+                                    )}
+                                </Item>
+                            ) : (
+                                    <div className="m-l-10 flx-1">
+                                        <Item className="m-b-0" required={false} label={index === 0 ? 'Correct nodes' : ''}>
+                                            {getFieldDecorator(`openedQuestions[${this.getFieldIndex(openedQuestions, openedQuestion.id)}].etalonNodes`, {
+                                                rules: [
+                                                    {
+                                                        required: true,
+                                                        message: ERRORS.required.answer,
+                                                    }
+                                                ],
+                                                initialValue: isEdit ? openedQuestion.etalonNodes : '{ "id": "Harry" }|{ "id": "Sally" }|{ "id": "Alice" }'
+                                            })(
+                                                <Input.TextArea />
+                                            )}
+                                        </Item>
+                                        <Item required={false} label={index === 0 ? 'Correct links' : ''}>
+                                            {getFieldDecorator(`openedQuestions[${this.getFieldIndex(openedQuestions, openedQuestion.id)}].etalonLinks`, {
+                                                initialValue: isEdit ? openedQuestion.etalonLinks : '{ "source": "Harry", "target": "Sally" }|{ "source": "Harry", "target": "Alice" }'
+                                            })(
+                                                <Input.TextArea />
+                                            )}
+                                        </Item>
+                                        <Button onClick={() => this.handleUpdateGraph({
+                                            id: openedQuestion.id,
+                                            nodes: getFieldValue('openedQuestions')[this.getFieldIndex(openedQuestions, openedQuestion.id)].etalonNodes.split("|").map(node => JSON.parse(node.trim())),
+                                            links: getFieldValue('openedQuestions')[this.getFieldIndex(openedQuestions, openedQuestion.id)].etalonLinks.split("|").map(link => JSON.parse(link.trim()))
+                                        })}>Update Graph View</Button>
+                                    </div>
+                                )
+                            }
+                        </div>
+                        <Item className="m-l-20 f-s-20 flx-1" required={false} style={{ marginTop: index === 0 ? 40 : 0 }}>
+                            <Icon
+                                className="dynamic-delete-button"
+                                type="minus-circle-o"
+                                onClick={() => this.removeOpenedQuestion(openedQuestion)}
+                            />
                         </Item>
                     </div>
-                    <Item className="m-l-20 f-s-20 flx-1" required={false} style={{ marginTop: index === 0 ? 40 : 0 }}>
-                        <Icon
-                            className="dynamic-delete-button"
-                            type="minus-circle-o"
-                            onClick={() => this.removeOpenedQuestion(openedQuestion)}
+                    {getFieldValue('openedQuestions')[this.getFieldIndex(openedQuestions, openedQuestion.id)].evaluatorType === EVALUATOR_TYPE.graph && (
+                        <Graph
+                            id={`graph-${openedQuestion.id}`}
+                            data={{
+                                nodes: graphsData.find(graph => graph.id === openedQuestion.id).nodes,
+                                links: graphsData.find(graph => graph.id === openedQuestion.id).links
+                            }}
                         />
-                    </Item>
+                    )}
                 </div>
             </div>
         ));

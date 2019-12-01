@@ -1,4 +1,5 @@
 import crc from 'crc';
+import Graph from 'graph-js';
 
 function extractWords(str) {
     let words;
@@ -171,4 +172,42 @@ export function proximityOfWords(answer, etalon) {
     console.log(ro * 100);
 
     return ro * 100;
+}
+
+export function graph(answer, etalonNodes, etalonLinks) {
+    const answerWorlds = extractWords(answer);
+    const etalonGraph = new Graph();
+    let result = 0;
+
+    etalonNodes
+        .split("|")
+        .map(node => JSON.parse(node.trim()))
+        .forEach(node => etalonGraph.addNode(node.id, node.id));
+    etalonLinks
+        .split("|")
+        .map(node => JSON.parse(node.trim()))
+        .forEach((link, index) => etalonGraph.addEdge(link.source, link.target, index))
+
+    const nodes = etalonGraph.getNodes();
+
+    for (const n in nodes) {
+        // nodes[n].getId();
+
+        const etalonWord = nodes[n].getContent();
+
+        if (answerWorlds.includes(etalonWord.toLowerCase())) {
+            result++;
+        }
+
+    }
+
+    // const edges = etalonGraph.getEdges();
+
+    // for (const e in edges) {
+    //     console.log(edges[e].getNodeStart().getId() + " --- " + edges[e].getId() + " = " + edges[e].getWeight() + " ---> " + edges[e].getNodeEnd().getId());
+    // }
+
+    const ro = result / nodes.length;
+
+    console.log(ro * 100);
 }

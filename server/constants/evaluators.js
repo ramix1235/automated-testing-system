@@ -1,4 +1,5 @@
 module.exports = {
     shingles: "Shingles",
-    proximityOfWords: "Proximity Of Words"
+    proximityOfWords: "Proximity Of Words",
+    graph: "Graph"
 };
