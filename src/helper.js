@@ -74,7 +74,7 @@ export function shingles(answer, etalon) {
     };
 }
 
-export function proximityOfWords(answer, etalon) {
+export function proximityOfWords(answer, etalon, weightOfWords) {
     // p1
     const etalonWorlds = extractWords(etalon);
     const answerWorlds = extractWords(answer);
@@ -126,7 +126,7 @@ export function proximityOfWords(answer, etalon) {
     function p8(d) {
         if (j + d < etalonWorlds.length && etalonWorlds[i - 1] === answerWorlds[j + d - 1]) { // or are they synonyms
             j = j + d;
-            p10(d, j);
+            p10(d, etalonWorlds[i - 1]);
         } else {
             p9(d);
         }
@@ -135,14 +135,16 @@ export function proximityOfWords(answer, etalon) {
     function p9(d) {
         if (j - d > 0 && etalonWorlds[i - 1] === answerWorlds[j - d - 1]) { // or are they synonyms
             j = j - d;
-            p10(d, j);
+            p10(d, etalonWorlds[i - 1]);
         } else {
             p11(d);
         }
     }
 
-    function p10(d, j) {
-        const r = d < Dmax ? 1 : (1 / (d - Dmax + 1));
+    function p10(d, word) {
+        const wordWeight = weightOfWords.find(w => w.word === word);
+        const delta = wordWeight ? wordWeight.weight : 1;
+        const r = d < Dmax ? delta : (delta / (d - Dmax + 1));
         R = R + r;
         p12();
     }
@@ -166,7 +168,14 @@ export function proximityOfWords(answer, etalon) {
     }
 
     function p13() {
-        ro = R / etalonWorlds.length;
+        const E = etalonWorlds.reduce(((all, word) => {
+            const wordWeight = weightOfWords.find(w => w.word === word);
+            const delta = wordWeight ? wordWeight.weight : 1;
+
+            return all + delta;
+        }), 0);
+
+        ro = R / E;
     }
 
     console.log(ro * 100);

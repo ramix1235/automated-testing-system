@@ -12,7 +12,11 @@ const OpenedQuestionSchema = new Schema({
     evaluatorType: String,
     etalon: String,
     etalonNodes: String,
-    etalonLinks: String
+    etalonLinks: String,
+    weightOfWords: [{
+        word: String,
+        weight: Number
+    }]
 });
 
 const TestSchema = new Schema({

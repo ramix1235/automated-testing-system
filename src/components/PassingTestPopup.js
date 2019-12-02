@@ -56,27 +56,28 @@ class PassingTestPopup extends PureComponent {
                         etalon: test.openedQuestions[index].etalon,
                         etalonNodes: test.openedQuestions[index].etalonNodes,
                         etalonLinks: test.openedQuestions[index].etalonLinks,
+                        weightOfWords: test.openedQuestions[index].weightOfWords,
                         evaluatorType: test.openedQuestions[index].evaluatorType,
                         answer
                     })) : []
                 }
 
-                // passedTest.openedQuestions.forEach(({ answer, etalon, etalonNodes, etalonLinks, evaluatorType }) => {
-                //     if (evaluatorType === EVALUATOR_TYPE.graph) {
-                //         graph(answer, etalonNodes, etalonLinks)
-                //     } else {
-                //         shingles(answer, etalon)
-                //         proximityOfWords(answer, etalon);
-                //     }
-                // })
+                passedTest.openedQuestions.forEach(({ answer, etalon, etalonNodes, etalonLinks, weightOfWords, evaluatorType }) => {
+                    if (evaluatorType === EVALUATOR_TYPE.graph) {
+                        graph(answer, etalonNodes, etalonLinks)
+                    } else {
+                        shingles(answer, etalon)
+                        proximityOfWords(answer, etalon, weightOfWords);
+                    }
+                })
 
-                dispatch(passedTestActions.create(passedTest))
-                    .then(() => {
-                        message.success(`Test has been passed successfully. Please check your result in the History`, 5);
-                        this.handleCancel();
-                    })
-                    .catch(() => message.error('Something went wrong', 5))
-                    .finally(() => this.setState({ confirmLoading: false }))
+                // dispatch(passedTestActions.create(passedTest))
+                //     .then(() => {
+                //         message.success(`Test has been passed successfully. Please check your result in the History`, 5);
+                //         this.handleCancel();
+                //     })
+                //     .catch(() => message.error('Something went wrong', 5))
+                //     .finally(() => this.setState({ confirmLoading: false }))
             })
         })
     }

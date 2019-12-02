@@ -24,7 +24,7 @@ router.post('/', auth.required, (req, res, next) => {
     }));
     const evaluatedOpenedQuestions = passedTest.openedQuestions.map(openedQuestion => ({
         ...openedQuestion,
-        evaluation: evaluatorService.evaluate(openedQuestion.answer, openedQuestion.etalon, openedQuestion.etalonNodes, openedQuestion.etalonLinks, openedQuestion.evaluatorType)
+        evaluation: evaluatorService.evaluate(openedQuestion.answer, openedQuestion.etalon, openedQuestion.etalonNodes, openedQuestion.etalonLinks, openedQuestion.weightOfWords, openedQuestion.evaluatorType)
     }));
     const totalEvaluation = [...evaluatedClosedQuestions, ...evaluatedOpenedQuestions].reduce((total, question, index, array) => {
         if (index === array.length - 1) {

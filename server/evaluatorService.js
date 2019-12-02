@@ -3,10 +3,10 @@ const Graph = require('graph-js');
 const EVALUATOR_TYPE = require('./constants/evaluators');
 
 class EvaluatorService {
-    evaluate(answer, etalon, etalonNodes, etalonLinks, evaluatorType) {
+    evaluate(answer, etalon, etalonNodes, etalonLinks, weightOfWords, evaluatorType) {
         switch (evaluatorType) {
             case EVALUATOR_TYPE.shingles: return this.shingles(answer, etalon);
-            case EVALUATOR_TYPE.proximityOfWords: return this.proximityOfWords(answer, etalon);
+            case EVALUATOR_TYPE.proximityOfWords: return this.proximityOfWords(answer, etalon, weightOfWords);
             case EVALUATOR_TYPE.graph: return this.graph(answer, etalonNodes, etalonLinks);
 
             default: return this.shingles(answer, etalon);
@@ -86,7 +86,7 @@ class EvaluatorService {
         };
     }
 
-    proximityOfWords(answer, etalon) {
+    proximityOfWords(answer, etalon, weightOfWords) {
         // p1
         const etalonWorlds = this.extractWords(etalon);
         const answerWorlds = this.extractWords(answer);

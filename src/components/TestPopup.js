@@ -11,7 +11,8 @@ import {
     Icon,
     Switch,
     message,
-    Select
+    Select,
+    InputNumber
 } from 'antd';
 import Graph from './Graph';
 
@@ -120,6 +121,12 @@ class TestPopup extends PureComponent {
     handleAfterClose = () => {
         const { form } = this.props;
 
+        this.setState({
+            closedQuestions: [],
+            openedQuestions: [],
+            graphsData: []
+        });
+
         form.resetFields();
     }
 
@@ -196,11 +203,37 @@ class TestPopup extends PureComponent {
                     etalon: '',
                     etalonNodes: [],
                     etalonLinks: [],
+                    weightOfWords: [],
                     type: EVALUATOR_TYPE.shingles
                 }
             ]
         }));
     };
+
+    removeWordWeight = (openedQuestion, wordWeight) => {
+        const { openedQuestions } = this.state;
+        const updatedOpenedQuestions = [...openedQuestions];
+        const questionIndex = updatedOpenedQuestions.findIndex(q => q.id === openedQuestion.id);
+        const weightWordIndex = updatedOpenedQuestions[questionIndex].weightOfWords.findIndex(w => w.id === wordWeight.id);
+
+        updatedOpenedQuestions[questionIndex].weightOfWords.splice(weightWordIndex, 1);
+
+        this.setState({ openedQuestions: updatedOpenedQuestions });
+    }
+
+    addWordWeight = openedQuestion => {
+        const { openedQuestions } = this.state;
+        const updatedOpenedQuestions = [...openedQuestions];
+        const questionIndex = updatedOpenedQuestions.findIndex(q => q.id === openedQuestion.id);
+
+        updatedOpenedQuestions[questionIndex].weightOfWords.push({
+            id: updatedOpenedQuestions[questionIndex].weightOfWords.length ? updatedOpenedQuestions[questionIndex].weightOfWords[updatedOpenedQuestions[questionIndex].weightOfWords.length - 1].id + 1 : 0,
+            word: '',
+            weight: 0
+        })
+
+        this.setState({ openedQuestions: updatedOpenedQuestions });
+    }
 
     renderClosedQuestions() {
         const { form: { getFieldDecorator }, isEdit } = this.props;
@@ -245,6 +278,119 @@ class TestPopup extends PureComponent {
         ));
     }
 
+    renderShingles(openedQuestion, index) {
+        const { form: { getFieldDecorator }, isEdit } = this.props;
+        const { openedQuestions } = this.state;
+
+        return (
+            <Item className="m-l-10 flx-1" required={false} label={index === 0 ? 'Correct answer' : ''}>
+                {getFieldDecorator(`openedQuestions[${this.getFieldIndex(openedQuestions, openedQuestion.id)}].etalon`, {
+                    rules: [
+                        {
+                            required: true,
+                            message: ERRORS.required.answer,
+                        }
+                    ],
+                    initialValue: isEdit ? openedQuestion.etalon : ''
+                })(
+                    <Input.TextArea />
+                )}
+            </Item>
+        );
+    }
+
+    renderProximityOfWords(openedQuestion, index) {
+        const { form: { getFieldDecorator }, isEdit } = this.props;
+        const { openedQuestions } = this.state;
+
+        return (
+            <div className="m-l-10 flx-1">
+                <Item required={false} label={index === 0 ? 'Correct answer' : ''}>
+                    {getFieldDecorator(`openedQuestions[${this.getFieldIndex(openedQuestions, openedQuestion.id)}].etalon`, {
+                        rules: [
+                            {
+                                required: true,
+                                message: ERRORS.required.answer,
+                            }
+                        ],
+                        initialValue: isEdit ? openedQuestion.etalon : ''
+                    })(
+                        <Input.TextArea />
+                    )}
+                </Item>
+                <div className="m-b-10">Weight of Words:</div>
+                {openedQuestion.weightOfWords.map((weightOfWord, weightOfWordIndex) => (
+                    <div key={weightOfWord.id} className="d-f jc-fs ai-fs">
+                        <Item required={false} label={weightOfWordIndex === 0 ? 'Word:' : ''}>
+                            {getFieldDecorator(`openedQuestions[${this.getFieldIndex(openedQuestions, openedQuestion.id)}].weightOfWords[${this.getFieldIndex(openedQuestion.weightOfWords, weightOfWord.id)}].word`, {
+                                initialValue: isEdit ? weightOfWord.word : ''
+                            })(
+                                <Input />
+                            )}
+                        </Item>
+                        <Item className="m-l-10" required={false} label={weightOfWordIndex === 0 ? 'Weight:' : ''}>
+                            {getFieldDecorator(`openedQuestions[${this.getFieldIndex(openedQuestions, openedQuestion.id)}].weightOfWords[${this.getFieldIndex(openedQuestion.weightOfWords, weightOfWord.id)}].weight`, {
+                                initialValue: isEdit ? weightOfWord.weight : 1
+                            })(
+                                <InputNumber min={1} max={10} />
+                            )}
+                        </Item>
+                        <Item className="m-l-20 f-s-20" required={false} style={{ marginTop: weightOfWordIndex === 0 ? 40 : 0 }}>
+                            <Icon
+                                className="dynamic-delete-button"
+                                type="minus-circle-o"
+                                onClick={() => this.removeWordWeight(openedQuestion, weightOfWord)}
+                            />
+                        </Item>
+                    </div>
+                ))}
+                <Item className="d-f jc-fs ai-c">
+                    <Button
+                        type="dashed"
+                        onClick={() => this.addWordWeight(openedQuestion)}
+                    >
+                        Add
+                    </Button>
+                </Item>
+            </div>
+        );
+    }
+
+    renderGraph(openedQuestion, index) {
+        const { form: { getFieldDecorator, getFieldValue }, isEdit } = this.props;
+        const { openedQuestions } = this.state;
+
+        return (
+            <div className="m-l-10 flx-1">
+                <Item className="m-b-0" required={false} label={index === 0 ? 'Correct nodes' : ''}>
+                    {getFieldDecorator(`openedQuestions[${this.getFieldIndex(openedQuestions, openedQuestion.id)}].etalonNodes`, {
+                        rules: [
+                            {
+                                required: true,
+                                message: ERRORS.required.answer,
+                            }
+                        ],
+                        initialValue: isEdit ? openedQuestion.etalonNodes : '{ "id": "H1", name: "Harry" }, { "id": "S1", name: "Sally" }, { "id": "A1", name: "Alice" }'
+                    })(
+                        <Input.TextArea />
+                    )}
+                </Item>
+                <Item required={false} label={index === 0 ? 'Correct links' : ''}>
+                    {getFieldDecorator(`openedQuestions[${this.getFieldIndex(openedQuestions, openedQuestion.id)}].etalonLinks`, {
+                        initialValue: isEdit ? openedQuestion.etalonLinks : '{ "source": "H1", "target": "S1" }, { "source": "H1", "target": "A1" }'
+                    })(
+                        <Input.TextArea />
+                    )}
+                </Item>
+                <Button onClick={() => this.handleUpdateGraph({
+                    id: openedQuestion.id,
+                    nodes: getFieldValue('openedQuestions')[this.getFieldIndex(openedQuestions, openedQuestion.id)].etalonNodes.split("|").map(node => JSON.parse(node.trim())),
+                    links: getFieldValue('openedQuestions')[this.getFieldIndex(openedQuestions, openedQuestion.id)].etalonLinks.split("|").map(link => JSON.parse(link.trim()))
+                })}>Update Graph View</Button>
+            </div>
+        );
+    }
+
     renderOpenedQuestions() {
         const { form: { getFieldDecorator, getFieldValue }, isEdit } = this.props;
         const { openedQuestions, graphsData } = this.state;
@@ -280,50 +426,11 @@ class TestPopup extends PureComponent {
                                     <Input.TextArea />
                                 )}
                             </Item>
-                            {getFieldValue('openedQuestions')[this.getFieldIndex(openedQuestions, openedQuestion.id)].evaluatorType !== EVALUATOR_TYPE.graph ? (
-                                <Item className="m-l-10 flx-1" required={false} label={index === 0 ? 'Correct answer' : ''}>
-                                    {getFieldDecorator(`openedQuestions[${this.getFieldIndex(openedQuestions, openedQuestion.id)}].etalon`, {
-                                        rules: [
-                                            {
-                                                required: true,
-                                                message: ERRORS.required.answer,
-                                            }
-                                        ],
-                                        initialValue: isEdit ? openedQuestion.etalon : ''
-                                    })(
-                                        <Input.TextArea />
-                                    )}
-                                </Item>
-                            ) : (
-                                    <div className="m-l-10 flx-1">
-                                        <Item className="m-b-0" required={false} label={index === 0 ? 'Correct nodes' : ''}>
-                                            {getFieldDecorator(`openedQuestions[${this.getFieldIndex(openedQuestions, openedQuestion.id)}].etalonNodes`, {
-                                                rules: [
-                                                    {
-                                                        required: true,
-                                                        message: ERRORS.required.answer,
-                                                    }
-                                                ],
-                                                initialValue: isEdit ? openedQuestion.etalonNodes : '{ "id": "H1", name: "Harry" }, { "id": "S1", name: "Sally" }, { "id": "A1", name: "Alice" }'
-                                            })(
-                                                <Input.TextArea />
-                                            )}
-                                        </Item>
-                                        <Item required={false} label={index === 0 ? 'Correct links' : ''}>
-                                            {getFieldDecorator(`openedQuestions[${this.getFieldIndex(openedQuestions, openedQuestion.id)}].etalonLinks`, {
-                                                initialValue: isEdit ? openedQuestion.etalonLinks : '{ "source": "H1", "target": "S1" }, { "source": "H1", "target": "A1" }'
-                                            })(
-                                                <Input.TextArea />
-                                            )}
-                                        </Item>
-                                        <Button onClick={() => this.handleUpdateGraph({
-                                            id: openedQuestion.id,
-                                            nodes: getFieldValue('openedQuestions')[this.getFieldIndex(openedQuestions, openedQuestion.id)].etalonNodes.split("|").map(node => JSON.parse(node.trim())),
-                                            links: getFieldValue('openedQuestions')[this.getFieldIndex(openedQuestions, openedQuestion.id)].etalonLinks.split("|").map(link => JSON.parse(link.trim()))
-                                        })}>Update Graph View</Button>
-                                    </div>
-                                )
-                            }
+                            {getFieldValue('openedQuestions')[this.getFieldIndex(openedQuestions, openedQuestion.id)].evaluatorType === EVALUATOR_TYPE.shingles
+                                ? this.renderShingles(openedQuestion, index)
+                                : getFieldValue('openedQuestions')[this.getFieldIndex(openedQuestions, openedQuestion.id)].evaluatorType === EVALUATOR_TYPE.proximityOfWords
+                                    ? this.renderProximityOfWords(openedQuestion, index)
+                                    : this.renderGraph(openedQuestion, index)}
                         </div>
                         <Item className="m-l-20 f-s-20 flx-1" required={false} style={{ marginTop: index === 0 ? 40 : 0 }}>
                             <Icon

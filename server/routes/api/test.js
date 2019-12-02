@@ -102,6 +102,14 @@ function transformTest(test) {
         const { _id, ...otherQuestionData } = _doc;
         otherQuestionData.id = _id;
 
+        otherQuestionData.weightOfWords = otherQuestionData.weightOfWords.map(weightOfWord => {
+            const { _doc } = weightOfWord;
+            const { _id, ...otherWeightOfWordData } = _doc;
+            otherWeightOfWordData.id = _id;
+
+            return otherWeightOfWordData;
+        });
+
         return otherQuestionData;
     });
 

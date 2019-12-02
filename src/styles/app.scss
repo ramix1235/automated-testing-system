@@ -168,3 +168,15 @@
     }
   }
 }
+
+.ant-input-number {
+  &:hover {
+    .ant-input-number-handler-wrap {
+      border-left: 1px solid $darkgreen;
+
+      .ant-input-number-handler-down {
+        border-top: 1px solid $darkgreen;
+      }
+    }
+  }
+}
