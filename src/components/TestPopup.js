@@ -71,13 +71,24 @@ class TestPopup extends PureComponent {
 
             console.log('Received values of form: ', values);
 
+            console.log(values);
+
             this.setState({ confirmLoading: true }, () => {
                 const test = {
                     author: user.id,
                     title: values.title,
                     description: values.description,
                     closedQuestions: values.closedQuestions ? values.closedQuestions.filter(Boolean) : [],
-                    openedQuestions: values.openedQuestions ? values.openedQuestions.filter(Boolean) : []
+                    openedQuestions: values.openedQuestions ? values.openedQuestions.filter(Boolean).map(question => {
+                        if (question.evaluatorType === EVALUATOR_TYPE.proximityOfWords) {
+                            return {
+                                ...question,
+                                weightOfWords: question.weightOfWords.filter(Boolean)
+                            }
+                        }
+
+                        return question;
+                    }) : []
                 }
 
                 if (isEdit) {
@@ -370,14 +381,14 @@ class TestPopup extends PureComponent {
                                 message: ERRORS.required.answer,
                             }
                         ],
-                        initialValue: isEdit ? openedQuestion.etalonNodes : '{ "id": "H1", name: "Harry" }, { "id": "S1", name: "Sally" }, { "id": "A1", name: "Alice" }'
+                        initialValue: isEdit ? openedQuestion.etalonNodes : '{ "id": "H1", "name": "Harry" }|{ "id": "S1", "name": "Sally" }|{ "id": "A1", "name": "Alice" }'
                     })(
                         <Input.TextArea />
                     )}
                 </Item>
                 <Item required={false} label={index === 0 ? 'Correct links' : ''}>
                     {getFieldDecorator(`openedQuestions[${this.getFieldIndex(openedQuestions, openedQuestion.id)}].etalonLinks`, {
-                        initialValue: isEdit ? openedQuestion.etalonLinks : '{ "source": "H1", "target": "S1" }, { "source": "H1", "target": "A1" }'
+                        initialValue: isEdit ? openedQuestion.etalonLinks : '{ "source": "H1", "target": "S1" }|{ "source": "H1", "target": "A1" }'
                     })(
                         <Input.TextArea />
                     )}

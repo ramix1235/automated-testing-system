@@ -65,19 +65,20 @@ class PassingTestPopup extends PureComponent {
                 passedTest.openedQuestions.forEach(({ answer, etalon, etalonNodes, etalonLinks, weightOfWords, evaluatorType }) => {
                     if (evaluatorType === EVALUATOR_TYPE.graph) {
                         graph(answer, etalonNodes, etalonLinks)
-                    } else {
+                    } else if (evaluatorType === EVALUATOR_TYPE.shingles) {
                         shingles(answer, etalon)
+                    } else if (evaluatorType === EVALUATOR_TYPE.proximityOfWords) {
                         proximityOfWords(answer, etalon, weightOfWords);
                     }
                 })
 
-                // dispatch(passedTestActions.create(passedTest))
-                //     .then(() => {
-                //         message.success(`Test has been passed successfully. Please check your result in the History`, 5);
-                //         this.handleCancel();
-                //     })
-                //     .catch(() => message.error('Something went wrong', 5))
-                //     .finally(() => this.setState({ confirmLoading: false }))
+                dispatch(passedTestActions.create(passedTest))
+                    .then(() => {
+                        message.success(`Test has been passed successfully. Please check your result in the History`, 5);
+                        this.handleCancel();
+                    })
+                    .catch(() => message.error('Something went wrong', 5))
+                    .finally(() => this.setState({ confirmLoading: false }))
             })
         })
     }
