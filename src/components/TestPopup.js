@@ -204,7 +204,7 @@ class TestPopup extends PureComponent {
                     etalonNodes: [],
                     etalonLinks: [],
                     weightOfWords: [],
-                    type: EVALUATOR_TYPE.shingles
+                    evaluatorType: EVALUATOR_TYPE.shingles
                 }
             ]
         }));
@@ -430,7 +430,10 @@ class TestPopup extends PureComponent {
                                 ? this.renderShingles(openedQuestion, index)
                                 : getFieldValue('openedQuestions')[this.getFieldIndex(openedQuestions, openedQuestion.id)].evaluatorType === EVALUATOR_TYPE.proximityOfWords
                                     ? this.renderProximityOfWords(openedQuestion, index)
-                                    : this.renderGraph(openedQuestion, index)}
+                                    : getFieldValue('openedQuestions')[this.getFieldIndex(openedQuestions, openedQuestion.id)].evaluatorType === EVALUATOR_TYPE.graph
+                                        ? this.renderGraph(openedQuestion, index)
+                                        : null
+                            }
                         </div>
                         <Item className="m-l-20 f-s-20 flx-1" required={false} style={{ marginTop: index === 0 ? 40 : 0 }}>
                             <Icon
